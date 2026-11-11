@@ -75,8 +75,8 @@ export interface TrustBadge {
 }
 
 export interface DaySchedule {
-  open: string; // Ex: "10:00" ou "00:00"
-  close: string; // Ex: "19:00" ou "23:59"
+  open?: string; // Ex: "10:00" ou "00:00"
+  close?: string; // Ex: "19:00" ou "23:59"
   closed?: boolean; // Se for folga/fechado o dia todo
 }
 

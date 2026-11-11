@@ -46,14 +46,14 @@ export const pizzariaConfig = {
     facebook: "https://facebook.com/fornobasilico",
   },
   businessHours: {
-    enabled: true,
     schedule: {
-      monday: { closed: true },
-      tuesday: { open: "18:00", close: "23:30" },
-      wednesday: { open: "18:00", close: "23:30" },
-      thursday: { open: "18:00", close: "23:30" },
-      friday: { open: "18:00", close: "23:30" },
-      saturday: { open: "18:00", close: "23:30" },
+      domingo: { open: "18:00", close: "22:30" },
+      segunda: { closed: true, open: "", close: "" },
+      terca: { open: "18:00", close: "23:00" },
+      quarta: { open: "18:00", close: "23:00" },
+      quinta: { open: "18:00", close: "23:00" },
+      sexta: { open: "18:00", close: "23:30" },
+      sabado: { open: "18:00", close: "23:30" },
     },
   },
 };
