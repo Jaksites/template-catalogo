@@ -1,43 +1,31 @@
 ---
+// src/components/catalogo/CatalogControls.astro
 ---
-<!-- Voltar Folha (Esquerda) -->
+
+<!-- Hotspot Lateral Esquerda (Voltar) -->
 <button 
   id="dog-ear-prev" 
   type="button"
   aria-label="Página anterior"
-  class="group absolute bottom-0 left-0 z-30 w-10 h-10 sm:w-14 sm:h-14 cursor-pointer focus:outline-hidden transition-all duration-300 active:scale-95 opacity-0 pointer-events-none"
+  class="group absolute left-0 top-0 bottom-0 z-30 w-12 sm:w-16 flex items-center justify-start pl-2 cursor-pointer focus:outline-none transition-all duration-300 opacity-0 pointer-events-none hover:bg-black/5 active:bg-black/10 select-none"
 >
-  <div class="absolute bottom-0 left-0 w-full h-full bg-[#E8E4DA]/80 rounded-bl-2xl sm:rounded-bl-3xl transition-colors group-hover:bg-[#dfdbd0]"></div>
-  <svg class="absolute bottom-0 left-0 w-full h-full drop-shadow-[2px_-2px_4px_rgba(20,15,10,0.08)] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" viewBox="0 0 48 48" fill="none">
-    <path d="M0 48L48 48L0 0L0 48Z" fill="#F7F5F0"/>
-    <path d="M0 0L48 48L24 24L0 0Z" fill="url(#grad-left)" opacity="0.12"/>
-    <defs>
-      <linearGradient id="grad-left" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
-        <stop stop-color="#000" stop-opacity="0.4"/>
-        <stop offset="1" stop-color="#fff" stop-opacity="0"/>
-      </linearGradient>
-    </defs>
-  </svg>
-  <span class="absolute bottom-1.5 left-2 text-[10px] sm:text-xs text-[#8A837B] font-mono group-hover:text-[#1A1918]">←</span>
+  <div class="w-8 h-8 rounded-full bg-white/80 backdrop-blur-md shadow-md border border-[#E8E4DA] flex items-center justify-center text-[#2D2A26] transition-transform group-hover:-translate-x-0.5 group-active:scale-90">
+    <svg class="w-4 h-4 stroke-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+    </svg>
+  </div>
 </button>
 
-<!-- Avançar Folha (Direita) -->
+<!-- Hotspot Lateral Direita (Avançar) -->
 <button 
   id="dog-ear-next" 
   type="button"
   aria-label="Próxima página"
-  class="group absolute bottom-0 right-0 z-30 w-10 h-10 sm:w-14 sm:h-14 cursor-pointer focus:outline-hidden transition-all duration-300 active:scale-95"
+  class="group absolute right-0 top-0 bottom-0 z-30 w-12 sm:w-16 flex items-center justify-end pr-2 cursor-pointer focus:outline-none transition-all duration-300 opacity-100 pointer-events-auto hover:bg-black/5 active:bg-black/10 select-none"
 >
-  <div class="absolute bottom-0 right-0 w-full h-full bg-[#E8E4DA]/80 rounded-br-2xl sm:rounded-br-3xl transition-colors group-hover:bg-[#dfdbd0]"></div>
-  <svg class="absolute bottom-0 right-0 w-full h-full drop-shadow-[-2px_-2px_4px_rgba(20,15,10,0.08)] transition-transform duration-300 group-hover:-translate-x-0.5 group-hover:-translate-y-0.5" viewBox="0 0 48 48" fill="none">
-    <path d="M48 48L0 48L48 0L48 48Z" fill="#F7F5F0"/>
-    <path d="M48 0L0 48L24 24L48 0Z" fill="url(#grad-right)" opacity="0.12"/>
-    <defs>
-      <linearGradient id="grad-right" x1="48" y1="0" x2="0" y2="48" gradientUnits="userSpaceOnUse">
-        <stop stop-color="#000" stop-opacity="0.4"/>
-        <stop offset="1" stop-color="#fff" stop-opacity="0"/>
-      </linearGradient>
-    </defs>
-  </svg>
-  <span class="absolute bottom-1.5 right-2 text-[10px] sm:text-xs text-[#8A837B] font-mono group-hover:text-[#1A1918]">→</span>
+  <div class="w-8 h-8 rounded-full bg-white/80 backdrop-blur-md shadow-md border border-[#E8E4DA] flex items-center justify-center text-[#2D2A26] transition-transform group-hover:translate-x-0.5 group-active:scale-90">
+    <svg class="w-4 h-4 stroke-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+    </svg>
+  </div>
 </button>

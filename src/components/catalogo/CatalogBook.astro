@@ -96,38 +96,126 @@ const categories = ['Todos', ...Array.from(new Set(products.map(p => p.category)
     font-family: 'Cormorant Garamond', Georgia, serif;
   }
   .book-container {
-    perspective: 1600px;
+    perspective: 2000px;
+    touch-action: pan-y pinch-zoom; /* Permite scroll vertical se necessário, mas intercepta o horizontal */
   }
   #catalog-spread-stage {
     transform-style: preserve-3d;
-    backface-visibility: hidden;
+    will-change: transform, opacity;
   }
+  
+  /* Efeito de virar folha realista para frente */
   .anim-flip-next {
-    animation: bookFlipNext 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    animation: flipPageNext 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards;
   }
+
+  /* Efeito de virar folha realista para trás */
   .anim-flip-prev {
-    animation: bookFlipPrev 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    animation: flipPagePrev 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards;
   }
 
-  @keyframes bookFlipNext {
-    0% { transform: rotateY(0deg); opacity: 1; }
-    50% { transform: rotateY(-25deg) scale(0.98); opacity: 0.7; filter: drop-shadow(-15px 10px 20px rgba(0,0,0,0.12)); }
-    100% { transform: rotateY(0deg); opacity: 1; }
+  @keyframes flipPageNext {
+    0% {
+      transform: rotateY(0deg);
+      transform-origin: left center;
+      opacity: 1;
+    }
+    45% {
+      transform: rotateY(-38deg) skewY(-1.5deg) scale(0.96);
+      transform-origin: left center;
+      opacity: 0.65;
+      filter: drop-shadow(-18px 8px 16px rgba(0,0,0,0.22));
+    }
+    100% {
+      transform: rotateY(0deg);
+      transform-origin: left center;
+      opacity: 1;
+    }
   }
 
-  @keyframes bookFlipPrev {
-    0% { transform: rotateY(0deg); opacity: 1; }
-    50% { transform: rotateY(25deg) scale(0.98); opacity: 0.7; filter: drop-shadow(15px 10px 20px rgba(0,0,0,0.12)); }
-    100% { transform: rotateY(0deg); opacity: 1; }
+  @keyframes flipPagePrev {
+    0% {
+      transform: rotateY(0deg);
+      transform-origin: right center;
+      opacity: 1;
+    }
+    45% {
+      transform: rotateY(38deg) skewY(1.5deg) scale(0.96);
+      transform-origin: right center;
+      opacity: 0.65;
+      filter: drop-shadow(18px 8px 16px rgba(0,0,0,0.22));
+    }
+    100% {
+      transform: rotateY(0deg);
+      transform-origin: right center;
+      opacity: 1;
+    }
   }
 </style>
 
 <script>
-  // O seu script de lógica anterior roda 100% compatível aqui sem alterações nos IDs
   import { addToCart } from '../../scripts/cartStore';
+
+  // ==========================================
+  // SINTETIZADOR DE SOM DE PAPEL (Web Audio API)
+  // ==========================================
+  let audioCtx: AudioContext | null = null;
+
+  function playPageFlipSound() {
+    try {
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContextClass) return;
+
+      if (!audioCtx) {
+        audioCtx = new AudioContextClass();
+      }
+
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+
+      const duration = 0.13; // 130ms de atrito suave
+      const bufferSize = Math.floor(audioCtx.sampleRate * duration);
+      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const channelData = buffer.getChannelData(0);
+
+      // Simulação de atrito de fibra de celulose (ruído rosa)
+      let b0 = 0, b1 = 0, b2 = 0;
+      for (let i = 0; i < bufferSize; i++) {
+        const white = Math.random() * 2 - 1;
+        b0 = 0.99886 * b0 + white * 0.0555179;
+        b1 = 0.99332 * b1 + white * 0.0750759;
+        b2 = 0.96900 * b2 + white * 0.1538520;
+        channelData[i] = (b0 + b1 + b2) * 0.09;
+      }
+
+      const noiseSource = audioCtx.createBufferSource();
+      noiseSource.buffer = buffer;
+
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(1350, audioCtx.currentTime);
+      filter.Q.setValueAtTime(1.1, audioCtx.currentTime);
+
+      const gain = audioCtx.createGain();
+      gain.gain.setValueAtTime(0.01, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.35, audioCtx.currentTime + 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration - 0.01);
+
+      noiseSource.connect(filter);
+      filter.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      noiseSource.start();
+      noiseSource.stop(audioCtx.currentTime + duration);
+    } catch {
+      // Falha silenciosa para navegadores que bloqueiem autoplay antes de interação do usuário
+    }
+  }
 
   function initCatalogBook() {
     const stage = document.getElementById('catalog-spread-stage');
+    const bookContainer = document.querySelector('.book-container') as HTMLElement | null;
     const coverSpread = document.getElementById('book-cover-spread');
     const coverHero = document.getElementById('cover-hero-page');
     const coverIndex = document.getElementById('cover-index-page');
@@ -140,8 +228,15 @@ const categories = ['Todos', ...Array.from(new Set(products.map(p => p.category)
     const items = Array.from(document.querySelectorAll<HTMLElement>('.catalog-item'));
     const prevBtn = document.getElementById('book-prev-btn') as HTMLButtonElement | null;
     const nextBtn = document.getElementById('book-next-btn') as HTMLButtonElement | null;
+    
+    // Controles Desktop
     const dogEarPrev = document.getElementById('dog-ear-prev') as HTMLButtonElement | null;
     const dogEarNext = document.getElementById('dog-ear-next') as HTMLButtonElement | null;
+
+    // Controles Laterais Mobile
+    const edgePrevMobile = document.getElementById('edge-prev-mobile') as HTMLButtonElement | null;
+    const edgeNextMobile = document.getElementById('edge-next-mobile') as HTMLButtonElement | null;
+
     const pageIndicator = document.getElementById('book-page-indicator');
     const modeBadge = document.getElementById('book-mode-badge');
 
@@ -277,30 +372,29 @@ const categories = ['Todos', ...Array.from(new Set(products.map(p => p.category)
       }
     }
 
+    function setBtnVisibility(btn: HTMLElement | null, visible: boolean) {
+      if (!btn) return;
+      if (visible) {
+        btn.classList.remove('opacity-0', 'pointer-events-none');
+        btn.classList.add('opacity-100', 'pointer-events-auto');
+      } else {
+        btn.classList.add('opacity-0', 'pointer-events-none');
+        btn.classList.remove('opacity-100', 'pointer-events-auto');
+      }
+    }
+
     function updateControls(isFirst: boolean, isLast: boolean) {
-  if (prevBtn) prevBtn.disabled = isFirst;
-  if (nextBtn) nextBtn.disabled = isLast;
+      if (prevBtn) prevBtn.disabled = isFirst;
+      if (nextBtn) nextBtn.disabled = isLast;
 
-  if (dogEarPrev) {
-    if (isFirst) {
-      dogEarPrev.classList.add('opacity-0', 'pointer-events-none');
-      dogEarPrev.classList.remove('opacity-100', 'pointer-events-auto');
-    } else {
-      dogEarPrev.classList.remove('opacity-0', 'pointer-events-none');
-      dogEarPrev.classList.add('opacity-100', 'pointer-events-auto');
-    }
-  }
+      // Desktop
+      setBtnVisibility(dogEarPrev, !isFirst);
+      setBtnVisibility(dogEarNext, !isLast);
 
-  if (dogEarNext) {
-    if (isLast) {
-      dogEarNext.classList.add('opacity-0', 'pointer-events-none');
-      dogEarNext.classList.remove('opacity-100', 'pointer-events-auto');
-    } else {
-      dogEarNext.classList.remove('opacity-0', 'pointer-events-none');
-      dogEarNext.classList.add('opacity-100', 'pointer-events-auto');
+      // Mobile Laterais
+      setBtnVisibility(edgePrevMobile, !isFirst);
+      setBtnVisibility(edgeNextMobile, !isLast);
     }
-  }
-}
 
     function turnPage(delta: number) {
       if (isFlipping) return;
@@ -308,35 +402,80 @@ const categories = ['Todos', ...Array.from(new Set(products.map(p => p.category)
       if (targetSpread < 0 || targetSpread >= getTotalSpreads()) return;
 
       isFlipping = true;
+      playPageFlipSound(); // Toca o som da virada
+
       const animClass = delta > 0 ? 'anim-flip-next' : 'anim-flip-prev';
       stage?.classList.remove('anim-flip-next', 'anim-flip-prev');
-      void stage?.offsetWidth;
+      void stage?.offsetWidth; // Trigger reflow
       stage?.classList.add(animClass);
 
       setTimeout(() => {
         currentSpread += delta;
         renderBook();
-      }, 180);
+      }, 190);
 
       setTimeout(() => {
         stage?.classList.remove(animClass);
         isFlipping = false;
-      }, 400);
+      }, 420);
     }
 
+    // ==========================================
+    // SISTEMA DE ARRASTAR / SWIPE MOBILE REFINADO
+    // ==========================================
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchStartTime = 0;
+
+    bookContainer?.addEventListener('touchstart', (e) => {
+      // Ignora toque se for em elementos de controle direto
+      const target = e.target as HTMLElement;
+      if (target.closest('button, select, a, input, [data-open-desc-btn]')) return;
+
+      touchStartX = e.changedTouches[0].clientX;
+      touchStartY = e.changedTouches[0].clientY;
+      touchStartTime = Date.now();
+    }, { passive: true });
+
+    bookContainer?.addEventListener('touchend', (e) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('button, select, a, input, [data-open-desc-btn]')) return;
+
+      const touchEndX = e.changedTouches[0].clientX;
+      const touchEndY = e.changedTouches[0].clientY;
+      const touchDuration = Date.now() - touchStartTime;
+
+      const diffX = touchEndX - touchStartX;
+      const diffY = touchEndY - touchStartY;
+
+      // Filtro para aceitar apenas swipe intencional (arrasto horizontal com velocidade razoável)
+      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40 && touchDuration < 600) {
+        if (diffX < 0) {
+          turnPage(1);  // Esquerda -> Avança
+        } else {
+          turnPage(-1); // Direita -> Volta
+        }
+      }
+    }, { passive: true });
+
+    // Eventos de Navegação
     prevBtn?.addEventListener('click', () => turnPage(-1));
     nextBtn?.addEventListener('click', () => turnPage(1));
     dogEarPrev?.addEventListener('click', () => turnPage(-1));
     dogEarNext?.addEventListener('click', () => turnPage(1));
+    edgePrevMobile?.addEventListener('click', () => turnPage(-1));
+    edgeNextMobile?.addEventListener('click', () => turnPage(1));
     document.getElementById('hero-next-mobile-btn')?.addEventListener('click', () => turnPage(1));
 
     document.getElementById('cover-start-btn')?.addEventListener('click', () => {
       currentSpread = isMobile() ? 2 : 1;
+      playPageFlipSound();
       renderBook();
     });
 
     document.getElementById('backcover-restart-btn')?.addEventListener('click', () => {
       currentSpread = 0;
+      playPageFlipSound();
       renderBook();
     });
 
@@ -344,114 +483,112 @@ const categories = ['Todos', ...Array.from(new Set(products.map(p => p.category)
       btn.addEventListener('click', () => {
         currentCategory = btn.getAttribute('data-cover-category') || 'all';
         currentSpread = isMobile() ? 2 : 1;
+        playPageFlipSound();
         renderBook();
       });
     });
 
+    // Variação via botões (Desktop)
     stage?.addEventListener('click', (e) => {
-  const varBtn = (e.target as HTMLElement).closest('[data-var-btn]') as HTMLButtonElement | null;
-  if (!varBtn) return;
-  const card = varBtn.closest('.catalog-item') as HTMLElement;
-  if (!card) return;
+      const varBtn = (e.target as HTMLElement).closest('[data-var-btn]') as HTMLButtonElement | null;
+      if (!varBtn) return;
+      const card = varBtn.closest('.catalog-item') as HTMLElement;
+      if (!card) return;
 
-  card.querySelectorAll('[data-var-btn]').forEach(b => {
-    (b as HTMLElement).className = 'px-2.5 py-1 text-[11px] font-medium tracking-wide rounded-md border transition-all cursor-pointer truncate max-w-full bg-white text-[#524D48] border-[#DFDBD3] hover:border-[#8C827A]';
-    (b as HTMLElement).style.backgroundColor = '';
-  });
-  
-  varBtn.className = 'px-2.5 py-1 text-[11px] font-medium tracking-wide rounded-md border transition-all cursor-pointer truncate max-w-full border-transparent text-white shadow-xs';
-  varBtn.style.backgroundColor = 'var(--brand-dark, #1A1918)';
+      card.querySelectorAll('[data-var-btn]').forEach(b => {
+        (b as HTMLElement).className = 'px-2 py-0.5 text-[10px] sm:text-[11px] font-medium tracking-wide rounded border transition-all cursor-pointer truncate max-w-full bg-white text-[#524D48] border-[#DFDBD3] hover:border-[#8C827A]';
+        (b as HTMLElement).style.backgroundColor = '';
+      });
+      
+      varBtn.className = 'px-2 py-0.5 text-[10px] sm:text-[11px] font-medium tracking-wide rounded border transition-all cursor-pointer truncate max-w-full border-transparent text-white shadow-xs';
+      varBtn.style.backgroundColor = 'var(--brand-dark, #1A1918)';
 
-  const price = Number(varBtn.dataset.varPrice);
-  const priceEl = card.querySelector('[data-item-price]');
-  if (priceEl && !isNaN(price)) priceEl.textContent = `R$ ${price.toFixed(2).replace('.', ',')}`;
+      const price = Number(varBtn.dataset.varPrice);
+      const priceEl = card.querySelector('[data-item-price]');
+      if (priceEl && !isNaN(price)) priceEl.textContent = `R$ ${price.toFixed(2).replace('.', ',')}`;
 
-  const imgUrl = varBtn.dataset.varImage;
-  const imgEl = card.querySelector('[data-item-image]') as HTMLImageElement | null;
-  if (imgEl && imgUrl) imgEl.src = imgUrl;
+      const imgUrl = varBtn.dataset.varImage;
+      const imgEl = card.querySelector('[data-item-image]') as HTMLImageElement | null;
+      if (imgEl && imgUrl) imgEl.src = imgUrl;
 
-  // Sincroniza com o select do mobile se a tela mudar
-  const selectEl = card.querySelector('[data-var-select]') as HTMLSelectElement | null;
-  if (selectEl && varBtn.dataset.varIdx) selectEl.value = varBtn.dataset.varIdx;
-});
-
-// 2. Alternância via Dropdown Select (Mobile)
-stage?.addEventListener('change', (e) => {
-  const select = (e.target as HTMLElement).closest('[data-var-select]') as HTMLSelectElement | null;
-  if (!select) return;
-  const card = select.closest('.catalog-item') as HTMLElement;
-  if (!card) return;
-
-  const selectedOption = select.options[select.selectedIndex];
-  if (!selectedOption) return;
-
-  const price = Number(selectedOption.dataset.varPrice);
-  const priceEl = card.querySelector('[data-item-price]');
-  if (priceEl && !isNaN(price)) priceEl.textContent = `R$ ${price.toFixed(2).replace('.', ',')}`;
-
-  const imgUrl = selectedOption.dataset.varImage;
-  const imgEl = card.querySelector('[data-item-image]') as HTMLImageElement | null;
-  if (imgEl && imgUrl) imgEl.src = imgUrl;
-
-  // Atualiza também os botões de desktop se redimensionar
-  const varIdx = select.value;
-  const targetBtn = card.querySelector(`[data-var-btn][data-var-idx="${varIdx}"]`) as HTMLButtonElement | null;
-  if (targetBtn) {
-    card.querySelectorAll('[data-var-btn]').forEach(b => {
-      (b as HTMLElement).className = 'px-2.5 py-1 text-[11px] font-medium tracking-wide rounded-md border transition-all cursor-pointer truncate max-w-full bg-white text-[#524D48] border-[#DFDBD3]';
-      (b as HTMLElement).style.backgroundColor = '';
+      const selectEl = card.querySelector('[data-var-select]') as HTMLSelectElement | null;
+      if (selectEl && varBtn.dataset.varIdx) selectEl.value = varBtn.dataset.varIdx;
     });
-    targetBtn.className = 'px-2.5 py-1 text-[11px] font-medium tracking-wide rounded-md border transition-all cursor-pointer truncate max-w-full border-transparent text-white shadow-xs';
-    targetBtn.style.backgroundColor = 'var(--brand-dark, #1A1918)';
-  }
-});
 
-// 3. Adicionar ao Carrinho (Lê tanto do Select quanto do Botão)
-stage?.addEventListener('click', (e) => {
-  const addBtn = (e.target as HTMLElement).closest('[data-btn-add-cart]') as HTMLButtonElement | null;
-  if (!addBtn) return;
-  const card = addBtn.closest('.catalog-item') as HTMLElement;
-  if (!card) return;
+    // Variação via Select (Mobile)
+    stage?.addEventListener('change', (e) => {
+      const select = (e.target as HTMLElement).closest('[data-var-select]') as HTMLSelectElement | null;
+      if (!select) return;
+      const card = select.closest('.catalog-item') as HTMLElement;
+      if (!card) return;
 
-  const rawPayload = card.dataset.productPayload;
-  if (!rawPayload) return;
-
-  try {
-    const product = JSON.parse(decodeURIComponent(rawPayload));
-    
-    // Tenta primeiro pelo Select (Mobile)
-    const select = card.querySelector('[data-var-select]') as HTMLSelectElement | null;
-    const activeVarBtn = card.querySelector('[data-var-btn].border-transparent') as HTMLElement | null;
-
-    let selectedVariation = product.initialVariation?.name || 'Padrão';
-    let finalPrice = product.price;
-    let finalImage = product.image;
-
-    if (select && select.offsetParent !== null) { // Visível no mobile
       const opt = select.options[select.selectedIndex];
-      if (opt) {
-        selectedVariation = opt.dataset.varName || selectedVariation;
-        finalPrice = Number(opt.dataset.varPrice) || finalPrice;
-        finalImage = opt.dataset.varImage || finalImage;
+      if (!opt) return;
+
+      const price = Number(opt.dataset.varPrice);
+      const priceEl = card.querySelector('[data-item-price]');
+      if (priceEl && !isNaN(price)) priceEl.textContent = `R$ ${price.toFixed(2).replace('.', ',')}`;
+
+      const imgUrl = opt.dataset.varImage;
+      const imgEl = card.querySelector('[data-item-image]') as HTMLImageElement | null;
+      if (imgEl && imgUrl) imgEl.src = imgUrl;
+
+      // Reflete a seleção nos botões de desktop se redimensionar tela
+      const targetBtn = card.querySelector(`[data-var-btn][data-var-idx="${select.value}"]`) as HTMLButtonElement | null;
+      if (targetBtn) {
+        card.querySelectorAll('[data-var-btn]').forEach(b => {
+          (b as HTMLElement).className = 'px-2 py-0.5 text-[10px] sm:text-[11px] font-medium tracking-wide rounded border transition-all cursor-pointer truncate max-w-full bg-white text-[#524D48] border-[#DFDBD3] hover:border-[#8C827A]';
+          (b as HTMLElement).style.backgroundColor = '';
+        });
+        targetBtn.className = 'px-2 py-0.5 text-[10px] sm:text-[11px] font-medium tracking-wide rounded border transition-all cursor-pointer truncate max-w-full border-transparent text-white shadow-xs';
+        targetBtn.style.backgroundColor = 'var(--brand-dark, #1A1918)';
       }
-    } else if (activeVarBtn) { // Visível no desktop
-      selectedVariation = activeVarBtn.dataset.varName || selectedVariation;
-      finalPrice = Number(activeVarBtn.dataset.varPrice) || finalPrice;
-      finalImage = activeVarBtn.dataset.varImage || finalImage;
-    }
+    });
 
-    addToCart(product, selectedVariation, finalPrice, finalImage, 1);
+    // Adicionar ao Carrinho
+    stage?.addEventListener('click', (e) => {
+      const addBtn = (e.target as HTMLElement).closest('[data-btn-add-cart]') as HTMLButtonElement | null;
+      if (!addBtn) return;
+      const card = addBtn.closest('.catalog-item') as HTMLElement;
+      if (!card) return;
 
-    const btnSpan = addBtn.querySelector('span');
-    if (btnSpan) {
-      const originalText = btnSpan.textContent;
-      btnSpan.textContent = 'Adicionado';
-      setTimeout(() => { btnSpan.textContent = originalText; }, 700);
-    }
-  } catch (err) {
-    console.error(err);
-  }
-});
+      const rawPayload = card.dataset.productPayload;
+      if (!rawPayload) return;
+
+      try {
+        const product = JSON.parse(decodeURIComponent(rawPayload));
+        const select = card.querySelector('[data-var-select]') as HTMLSelectElement | null;
+        const activeVarBtn = card.querySelector('[data-var-btn].border-transparent') as HTMLElement | null;
+
+        let selectedVariation = product.initialVariation?.name || 'Padrão';
+        let finalPrice = product.price;
+        let finalImage = product.image;
+
+        if (select && select.offsetParent !== null) {
+          const opt = select.options[select.selectedIndex];
+          if (opt) {
+            selectedVariation = opt.dataset.varName || selectedVariation;
+            finalPrice = Number(opt.dataset.varPrice) || finalPrice;
+            finalImage = opt.dataset.varImage || finalImage;
+          }
+        } else if (activeVarBtn) {
+          selectedVariation = activeVarBtn.dataset.varName || selectedVariation;
+          finalPrice = Number(activeVarBtn.dataset.varPrice) || finalPrice;
+          finalImage = activeVarBtn.dataset.varImage || finalImage;
+        }
+
+        addToCart(product, selectedVariation, finalPrice, finalImage, 1);
+
+        const btnSpan = addBtn.querySelector('span');
+        if (btnSpan) {
+          const originalText = btnSpan.textContent;
+          btnSpan.textContent = 'Adicionado';
+          setTimeout(() => { btnSpan.textContent = originalText; }, 700);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    });
 
     renderBook();
   }

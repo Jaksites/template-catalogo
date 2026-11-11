@@ -50,7 +50,7 @@ export const pizzariaConfig = {
     schedule: {
       monday: { closed: true },
       tuesday: { open: "18:00", close: "23:30" },
-      wednesday: { closed: true },
+      wednesday: { open: "18:00", close: "23:30" },
       thursday: { open: "18:00", close: "23:30" },
       friday: { open: "18:00", close: "23:30" },
       saturday: { open: "18:00", close: "23:30" },
