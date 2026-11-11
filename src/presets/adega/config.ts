@@ -5,7 +5,7 @@ export const adegaConfig = {
   shippingNotice:
     "Bebidas enviadas geladas com entrega expressa em até 60 minutos",
   theme: {
-    primary: "#881337", // Vinho Bordô encorpado (Rose 900)
+    primary: "#881337",
     primaryHover: "#4c0519",
     accent: "#ffe4e6",
     accentText: "#9f1239",

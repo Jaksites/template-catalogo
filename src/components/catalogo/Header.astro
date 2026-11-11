@@ -1,5 +1,4 @@
 ---
-// src/components/catalogo/Header.astro
 import type { SiteConfig } from '../../types';
 import { checkStoreStatus } from '../../scripts/businessHours';
 
@@ -8,64 +7,85 @@ interface Props {
 }
 
 const { config } = Astro.props;
-// Compatibilidade: busca businessHours na raiz ou dentro de contact
 const hours = (config as any).businessHours || config.contact?.businessHours || '';
 const status = checkStoreStatus(hours);
+
+// Separação do nome para tipografia editorial sofisticada
+const nameParts = config.name.trim().split(' ');
+const firstWord = nameParts[0];
+const restWords = nameParts.slice(1).join(' ');
 ---
 
-<header class="sticky top-0 z-30 w-full bg-white/85 backdrop-blur-md border-b border-neutral-200/80 transition-all">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
+<header class="sticky top-0 z-40 w-full bg-[#FAF9F5]/85 backdrop-blur-md border-b border-[#E8E5DD] shadow-[0_4px_20px_-4px_rgba(20,15,10,0.04)] transition-all duration-300">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
     
-    <!-- Logo + Nome da Loja -->
-    <a href="/" class="flex items-center gap-3 group focus:outline-none">
+    <!-- Logo & Masthead Editorial -->
+    <a href="/" class="flex items-center gap-3 sm:gap-4 group focus:outline-none">
       {config.logoUrl ? (
-        <img 
-          src={config.logoUrl} 
-          alt={`Logo ${config.name}`} 
-          class="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border border-neutral-200/80 shadow-xs"
-        />
+        <div class="relative p-0.5 rounded-full ring-1 ring-[#D8D2C5]/70 group-hover:ring-[#1A1918] transition-all duration-300">
+          <img 
+            src={config.logoUrl} 
+            alt={`Logo ${config.name}`} 
+            class="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover grayscale-15 group-hover:grayscale-0 transition-all duration-300"
+          />
+        </div>
       ) : (
-        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-neutral-900 text-white flex items-center justify-center font-extrabold text-lg tracking-wider shrink-0">
+        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#1A1918] text-[#FDFCF9] flex items-center justify-center font-serif text-base sm:text-lg font-light tracking-wider shadow-xs">
           {config.name.charAt(0)}
         </div>
       )}
 
-      <div>
-        <h1 class="text-base sm:text-xl font-extrabold tracking-tight text-neutral-900 leading-none">
-          {config.name.split(' ')[0]} <span class="text-brand-primary">{config.name.split(' ').slice(1).join(' ')}</span>
+      <div class="flex flex-col">
+        <!-- Título com tratamento de revista clássica -->
+        <h1 class="text-xs sm:text-sm tracking-[0.22em] uppercase text-[#1A1918] font-medium leading-none transition-colors">
+          <span>{firstWord}</span>
+          {restWords && (
+            <span class="font-serif normal-case italic tracking-normal text-[#8A8177] text-sm sm:text-base ml-1">
+              & {restWords.replace(/^&\s*/, '')}
+            </span>
+          )}
         </h1>
         
-        <!-- Status de Aberto/Fechado -->
-        <div class="flex items-center gap-1.5 mt-1">
-          <span class={`w-2 h-2 rounded-full ${status.isOpen ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'}`}></span>
-          <span class={`text-[10px] font-bold ${status.isOpen ? 'text-emerald-700' : 'text-rose-600'}`}>
+        <!-- Status de Horário: Discreto, Elegante e Minimalista -->
+        <div class="flex items-center gap-2 mt-1.5">
+          <span class="relative flex h-1.5 w-1.5">
+            {status.isOpen && (
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#4E775B] opacity-40"></span>
+            )}
+            <span class={`relative inline-flex rounded-full h-1.5 w-1.5 ${status.isOpen ? 'bg-[#3A5D44]' : 'bg-[#9E978F]'}`}></span>
+          </span>
+          <span class={`text-[9px] font-mono tracking-[0.16em] uppercase ${status.isOpen ? 'text-[#3A5D44] font-medium' : 'text-[#8C847B]'}`}>
             {status.message}
           </span>
         </div>
       </div>
     </a>
 
-    <!-- Botão Carrinho com Badge Flutuante -->
+    <!-- Cápsula da Sacola (Estilo Carteira / Pílula de Luxo) -->
     <button 
       id="open-cart-btn" 
-      class="relative p-2.5 sm:px-4 sm:py-2.5 bg-neutral-900 hover:bg-neutral-800 text-white rounded-2xl flex items-center gap-2.5 transition-all shadow-md active:scale-95 focus:outline-none"
+      type="button"
+      class="group relative inline-flex items-center gap-2.5 px-3.5 sm:px-4 py-2 bg-[#1A1918] hover:bg-[#2B2824] text-[#FDFCF9] rounded-full transition-all duration-300 shadow-[0_2px_10px_rgba(26,25,24,0.12)] active:scale-95 cursor-pointer focus:outline-none border border-[#2B2824]"
       aria-label="Abrir sacola de pedidos"
     >
-      <!-- Ícone Sacola -->
-      <svg class="w-5 h-5 stroke-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+      <!-- Ícone Sacola Traço Fino -->
+      <svg class="w-4 h-4 stroke-[1.6] text-[#D8D2C5] group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25c-.669 0-1.189-.578-1.119-1.243l1.263-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119.993z" />
       </svg>
       
-      <span class="hidden sm:inline font-bold text-xs sm:text-sm">Meu Carrinho</span>
+      <span class="hidden sm:inline font-mono tracking-[0.2em] text-[10px] uppercase text-[#E5E0D6] font-medium">
+        Sacola
+      </span>
 
-      <!-- Badge de Quantidade (Flutuando no canto superior direito) -->
+      <!-- Badge de Quantidade em Contraste Nobre (Marfim/Carvão) -->
       <span 
         id="cart-badge" 
-        class="hidden absolute -top-1.5 -right-1.5 bg-brand-primary text-white text-[11px] font-black h-5 min-w-5 px-1 rounded-full  items-center justify-center border-2 border-white shadow-sm transition-transform duration-300"
+        class="hidden bg-[#FAF8F5] text-[#1A1918] text-[10px] font-mono font-bold h-4.5 min-w-4.5 px-1.5 rounded-full items-center justify-center leading-none shadow-xs transition-transform duration-300"
       >
         0
       </span>
     </button>
+
   </div>
 </header>
 
@@ -76,7 +96,6 @@ const status = checkStoreStatus(hours);
     const cartBtn = document.getElementById('open-cart-btn');
     const badge = document.getElementById('cart-badge');
 
-    // 1. Atualiza o contador e aplica o efeito visual
     function updateBadge(animate = false) {
       if (!badge) return;
       const { totalCount } = getCartTotals();
@@ -84,8 +103,8 @@ const status = checkStoreStatus(hours);
       if (totalCount > 0) {
         badge.textContent = totalCount > 99 ? '99+' : totalCount.toString();
         badge.classList.remove('hidden');
+        badge.classList.add('flex');
 
-        // Micro-animação de "pulo" ao adicionar novo item
         if (animate) {
           badge.classList.add('scale-125');
           cartBtn?.classList.add('scale-105');
@@ -96,10 +115,10 @@ const status = checkStoreStatus(hours);
         }
       } else {
         badge.classList.add('hidden');
+        badge.classList.remove('flex');
       }
     }
 
-    // 2. Dispara abertura da gaveta do carrinho
     if (cartBtn) {
       cartBtn.onclick = (e) => {
         e.preventDefault();
@@ -107,14 +126,10 @@ const status = checkStoreStatus(hours);
       };
     }
 
-    // 3. Renderiza o valor inicial na carga da página
     updateBadge(false);
-
-    // 4. Escuta atualizações do carrinho com efeito de pulo
     window.addEventListener('cart:updated', () => updateBadge(true));
   }
 
-  // Inicialização compatível com navegação Astro
   setupHeaderCart();
   document.addEventListener('astro:page-load', setupHeaderCart);
 </script>

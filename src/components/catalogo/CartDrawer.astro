@@ -11,89 +11,104 @@ const { config = siteConfig } = Astro.props;
 const status = checkStoreStatus(config.businessHours);
 ---
 
-<div id="cart-modal" class="fixed inset-0 z-50 invisible pointer-events-none transition-all duration-300">
-  <!-- Backdrop Escuro com Blur -->
-  <div id="cart-backdrop" class="absolute inset-0 bg-neutral-950/60 backdrop-blur-sm opacity-0 transition-opacity duration-300"></div>
+<div id="cart-modal" class="fixed inset-0 z-50 invisible pointer-events-none transition-all duration-500 font-sans">
+  <!-- Backdrop Suave com Filtro Difuso -->
+  <div id="cart-backdrop" class="absolute inset-0 bg-[#141312]/40 backdrop-blur-md opacity-0 transition-opacity duration-500"></div>
 
-  <!-- Painel Lateral (Drawer) -->
-  <div id="cart-panel" class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between transform translate-x-full transition-transform duration-300 ease-out z-10">
+  <!-- Gaveta Lateral (Drawer) em tom Alabaster com Borda Fina -->
+  <div 
+    id="cart-panel" 
+    class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-[#FAF9F5] shadow-[-20px_0_60px_rgba(20,15,10,0.15)] border-l border-[#EBE7DF] flex flex-col justify-between transform translate-x-full transition-transform duration-500 cubic-bezier(0.16, 1, 0.3, 1) z-10"
+  >
     
-    <!-- Cabeçalho -->
-    <div class="p-4 sm:p-5 border-b border-neutral-100 flex items-center justify-between bg-neutral-50/70">
-      <div class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-xl bg-brand-primary/10 text-brand-primary flex items-center justify-center">
-          <svg class="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-          </svg>
-        </div>
-        <div>
-          <h3 class="text-base font-bold text-neutral-900 leading-none">Sua Sacola</h3>
-          <span id="cart-header-count" class="text-[11px] text-neutral-400 font-medium">0 itens</span>
+    <!-- Cabeçalho Editorial -->
+    <div class="px-6 py-5 border-b border-[#ECE7DF] flex items-center justify-between bg-white/60 backdrop-blur-xs">
+      <div>
+        <span class="text-[9px] uppercase tracking-[0.25em] font-mono text-[#8C857B] block mb-0.5">Sua Seleção</span>
+        <div class="flex items-baseline gap-2">
+          <h3 class="font-serif text-2xl font-normal text-[#1A1918] tracking-tight">Sacola de Pedidos</h3>
+          <span id="cart-header-count" class="text-[11px] font-mono text-[#A39B91]">0 itens</span>
         </div>
       </div>
 
-      <button id="close-cart-btn" class="p-2 text-neutral-400 hover:text-neutral-700 hover:bg-neutral-200/50 rounded-full transition-colors" aria-label="Fechar carrinho">
-        <svg class="w-5 h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <button 
+        id="close-cart-btn" 
+        class="group p-2 text-[#7A736A] hover:text-[#1A1918] transition-colors rounded-full cursor-pointer focus:outline-hidden" 
+        aria-label="Fechar sacola"
+      >
+        <svg class="w-5 h-5 stroke-[1.5] transition-transform duration-300 group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>
     </div>
 
     <!-- Lista de Itens do Carrinho -->
-    <div id="cart-items" class="p-4 sm:p-5 grow overflow-y-auto flex flex-col gap-3 divide-y divide-neutral-100">
-      <!-- Injetado via Javascript -->
+    <div id="cart-items" class="p-6 grow overflow-y-auto flex flex-col gap-4 divide-y divide-[#ECE7DF]/70">
+      <!-- Injetado dinamicamente via Javascript -->
     </div>
 
-    <!-- Rodapé e Checkout -->
-    <div class="p-4 sm:p-5 border-t border-neutral-100 bg-neutral-50/90 flex flex-col gap-3">
-      <div class="flex items-center justify-between text-xs sm:text-sm text-neutral-500">
-        <span>Subtotal:</span>
-        <span id="cart-subtotal" class="font-bold text-neutral-800">R$ 0,00</span>
+    <!-- Rodapé Editorial e Checkout -->
+    <div class="p-6 border-t border-[#ECE7DF] bg-[#F4F1EA]/80 backdrop-blur-xs flex flex-col gap-4">
+      
+      <!-- Linhas de Valores -->
+      <div class="space-y-1.5">
+        <div class="flex items-center justify-between text-xs text-[#7A736A]">
+          <span class="tracking-wide uppercase text-[10px] font-mono">Subtotal</span>
+          <span id="cart-subtotal" class="font-mono text-sm text-[#38332E]">R$ 0,00</span>
+        </div>
+
+        <div class="flex items-baseline justify-between pt-2 border-t border-[#E5E0D5]">
+          <span class="font-serif text-base text-[#1A1918]">Total Estimado</span>
+          <span id="cart-total" class="font-serif text-2xl font-semibold text-[#1A1918]">R$ 0,00</span>
+        </div>
       </div>
 
-      <div class="flex items-center justify-between text-base font-black text-neutral-900 pt-2 border-t border-neutral-200/60">
-        <span>Total:</span>
-        <span id="cart-total" class="text-brand-primary text-xl font-black">R$ 0,00</span>
-      </div>
-
-      <!-- Aviso se a loja estiver FECHADA -->
+      <!-- Aviso refinado se a loja estiver FECHADA -->
       {!status.isOpen && (
-        <div class="p-3 bg-amber-50 border border-amber-200/80 rounded-2xl flex items-start gap-2.5 text-xs text-amber-800">
-          <svg class="w-4 h-4 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <div class="p-3.5 bg-[#EFECE4] border border-[#DDD7CA] rounded-xl flex items-start gap-3 text-xs text-[#59524A]">
+          <svg class="w-4 h-4 text-[#8C8172] shrink-0 mt-0.5 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <div>
-            <strong class="font-bold block">Estabelecimento Fechado</strong>
-            <p class="text-[11px] mt-0.5 text-amber-700">{status.message}</p>
+            <strong class="font-mono text-[10px] uppercase tracking-wider block text-[#3A352F]">Catálogo em Demonstração</strong>
+            <p class="text-[11px] mt-0.5 text-[#6B6358] leading-relaxed">{status.message}</p>
           </div>
         </div>
       )}
 
-      <!-- Botão de Checkout com Bloqueio Real -->
+      <!-- Botão de Ação / Checkout -->
       <button 
         id="btn-checkout-modal" 
         disabled={!status.isOpen}
         data-store-open={status.isOpen ? 'true' : 'false'}
-        class={`w-full mt-2 py-3.5 px-4 font-bold rounded-2xl flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.99] ${
+        class={`w-full py-4 px-5 text-xs font-medium tracking-[0.2em] uppercase rounded-xl flex items-center justify-center gap-2 transition-all duration-300 shadow-sm cursor-pointer active:scale-[0.99] ${
           status.isOpen 
-            ? 'bg-brand-primary hover:bg-brand-primary-hover disabled:bg-gray-300 disabled:cursor-not-allowed text-white' 
-            : 'bg-gray-200 text-gray-400 cursor-not-allowed border border-gray-300'
+            ? 'bg-[#1A1918] hover:bg-[#2C2926] text-[#FAF8F5] disabled:bg-[#D5D0C6] disabled:text-[#8C857B] disabled:cursor-not-allowed' 
+            : 'bg-[#DCD8CF] text-[#8C857B] cursor-not-allowed border border-[#D0CBC0]'
         }`}
       >
-        <span>{status.isOpen ? 'Finalizar Pedido' : 'Pedidos Fechados no Momento'}</span>
+        <span>{status.isOpen ? 'Prosseguir para Checkout' : 'Atendimento Pausado'}</span>
         {status.isOpen ? (
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-          </svg>
+          <span class="font-serif text-sm">→</span>
         ) : (
-          <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          <svg class="w-3.5 h-3.5 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
           </svg>
         )}
       </button>
+
+      <p class="text-center text-[10px] text-[#A69E94] font-mono tracking-widest uppercase">
+        Finalização direta via WhatsApp Oficial
+      </p>
     </div>
   </div>
 </div>
+
+<style>
+  .font-serif {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+  }
+</style>
 
 <script>
   import { getCart, updateQuantity, getCartTotals } from '../../scripts/cartStore';
@@ -123,7 +138,7 @@ const status = checkStoreStatus(config.businessHours);
       document.body.style.overflow = '';
       setTimeout(() => {
         modal.classList.add('invisible', 'pointer-events-none');
-      }, 300);
+      }, 500);
     }
   }
 
@@ -135,7 +150,6 @@ const status = checkStoreStatus(config.businessHours);
     subtotalEl.textContent = `R$ ${totalPrice.toFixed(2).replace('.', ',')}`;
     totalEl.textContent = `R$ ${totalPrice.toFixed(2).replace('.', ',')}`;
 
-    // 🔒 VALIDAÇÃO CORRETA: Só ativa se tiver itens E a loja estiver aberta
     if (cart.length === 0 || !isStoreOpen) {
       btnCheckout.disabled = true;
     } else {
@@ -144,18 +158,18 @@ const status = checkStoreStatus(config.businessHours);
 
     if (cart.length === 0) {
       cartItemsContainer.innerHTML = `
-        <div class="flex flex-col items-center justify-center h-full text-center text-neutral-400 gap-3 py-16">
-          <div class="w-16 h-16 rounded-full bg-neutral-100 flex items-center justify-center text-neutral-300">
-            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+        <div class="flex flex-col items-center justify-center h-full text-center py-20 px-4">
+          <div class="w-14 h-14 rounded-full border border-[#DFDBD1] flex items-center justify-center text-[#A69E94] mb-4">
+            <svg class="w-6 h-6 stroke-[1.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
           </div>
-          <div>
-            <p class="text-sm font-bold text-neutral-700">Sua sacola está vazia</p>
-            <p class="text-xs text-neutral-400 mt-0.5">Adicione itens para começar seu pedido.</p>
-          </div>
-          <button id="btn-empty-shop" class="mt-2 text-xs font-bold text-brand-primary hover:underline">
-            Explorar catálogo →
+          <p class="font-serif text-lg text-[#1A1918]">Sua sacola está vazia</p>
+          <p class="text-xs text-[#8C847B] font-light mt-1 max-w-[200px] leading-relaxed">
+            Selecione criações exclusivas das páginas para compor seu pedido.
+          </p>
+          <button id="btn-empty-shop" class="mt-5 text-[11px] font-mono uppercase tracking-[0.2em] text-[#1A1918] border-b border-[#1A1918] pb-0.5 hover:opacity-70 transition-opacity cursor-pointer">
+            Folhear Catálogo
           </button>
         </div>
       `;
@@ -168,39 +182,45 @@ const status = checkStoreStatus(config.businessHours);
         const itemTotal = unitPrice * item.quantity;
 
         return `
-          <div class="pt-3 first:pt-0 flex items-center gap-3">
-            <img 
-              src="${itemImage}" 
-              alt="${item.product.name}" 
-              class="w-16 h-16 aspect-square object-cover rounded-xl bg-neutral-100 border border-neutral-100 shrink-0"
-            >
+          <div class="pt-4 first:pt-0 flex items-center gap-3.5 group">
+            <div class="w-16 h-16 rounded-lg overflow-hidden bg-[#ECE8DE] border border-[#E3DFD5] shrink-0">
+              <img 
+                src="${itemImage}" 
+                alt="${item.product.name}" 
+                class="w-full h-full object-cover filter contrast-[1.02]"
+              >
+            </div>
             
             <div class="grow min-w-0">
-              <h4 class="font-bold text-xs sm:text-sm text-neutral-900 truncate leading-tight">${item.product.name}</h4>
-              <p class="text-[11px] text-neutral-500 font-medium mt-0.5 truncate">
-                Opção: <span class="text-neutral-800 font-bold">${item.selectedSize}</span>
+              <h4 class="font-serif text-base text-[#1A1918] truncate font-medium leading-snug">${item.product.name}</h4>
+              <p class="text-[11px] text-[#787169] mt-0.5 truncate">
+                Variação: <span class="font-medium text-[#2E2A27]">${item.selectedSize}</span>
               </p>
-              <div class="flex items-center gap-2 mt-1">
-                <span class="text-xs font-black text-neutral-900">R$ ${itemTotal.toFixed(2).replace('.', ',')}</span>
-                ${item.quantity > 1 ? `<span class="text-[10px] text-neutral-400 font-medium">(${item.quantity}x R$ ${unitPrice.toFixed(2).replace('.', ',')})</span>` : ''}
+              <div class="flex items-baseline gap-2 mt-1">
+                <span class="font-serif text-sm font-semibold text-[#1A1918]">R$ ${itemTotal.toFixed(2).replace('.', ',')}</span>
+                ${item.quantity > 1 ? `<span class="text-[10px] font-mono text-[#999187]">(${item.quantity} × R$ ${unitPrice.toFixed(2).replace('.', ',')})</span>` : ''}
               </div>
             </div>
 
-            <!-- Controle de Quantidade -->
-            <div class="flex items-center gap-1 bg-neutral-50 border border-neutral-200/80 rounded-xl p-1 shrink-0">
+            <!-- Ajuste de Quantidade Elegante -->
+            <div class="flex items-center border border-[#DFDBD1] bg-white rounded-lg p-0.5 shrink-0">
               <button 
                 data-qty-change="${index}" 
                 data-delta="-1" 
-                class="w-6 h-6 flex items-center justify-center text-neutral-500 hover:text-neutral-900 hover:bg-white rounded-lg transition-colors font-bold text-xs"
+                class="w-6 h-6 flex items-center justify-center text-[#615A52] hover:text-[#1A1918] hover:bg-[#F5F2EB] rounded transition-colors text-xs cursor-pointer"
                 aria-label="Diminuir"
               >
-                ${item.quantity === 1 ? '🗑️' : '-'}
+                ${item.quantity === 1 ? `
+                  <svg class="w-3 h-3 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                ` : '−'}
               </button>
-              <span class="text-xs font-bold w-4 text-center text-neutral-800">${item.quantity}</span>
+              <span class="text-xs font-mono font-medium w-5 text-center text-[#1A1918]">${item.quantity}</span>
               <button 
                 data-qty-change="${index}" 
                 data-delta="1" 
-                class="w-6 h-6 flex items-center justify-center text-neutral-500 hover:text-neutral-900 hover:bg-white rounded-lg transition-colors font-bold text-xs"
+                class="w-6 h-6 flex items-center justify-center text-[#615A52] hover:text-[#1A1918] hover:bg-[#F5F2EB] rounded transition-colors text-xs cursor-pointer"
                 aria-label="Aumentar"
               >
                 +
@@ -211,7 +231,7 @@ const status = checkStoreStatus(config.businessHours);
       }).join('');
     }
 
-    // Ouvintes para botões de quantidade
+    // Ouvintes dos botões de quantidade
     document.querySelectorAll('[data-qty-change]').forEach((btn) => {
       btn.addEventListener('click', (e) => {
         const target = e.currentTarget as HTMLElement;
@@ -223,18 +243,17 @@ const status = checkStoreStatus(config.businessHours);
     });
   }
 
-  // Ouvintes de abertura/fechamento
+  // Event Listeners de Abertura / Fechamento
   document.getElementById('close-cart-btn')?.addEventListener('click', () => toggle(false));
   backdrop.addEventListener('click', () => toggle(false));
   window.addEventListener('cart:open', () => toggle(true));
   window.addEventListener('cart:updated', render);
   
-  // Tecla ESC para fechar
   window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') toggle(false);
   });
 
-  // Avançar para o checkout (apenas se a loja estiver aberta)
+  // Abertura do Modal de Checkout
   btnCheckout.addEventListener('click', () => {
     if (!isStoreOpen) return;
     toggle(false);

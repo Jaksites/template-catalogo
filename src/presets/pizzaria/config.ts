@@ -1,7 +1,7 @@
 export const pizzariaConfig = {
   name: "FORNO & BASÍLICO",
   tagline: "Pizzaria Artesanal no Forno a Lenha",
-  whatsappNumber: "5511999999999",
+  whatsappNumber: "5511222222222",
   shippingNotice: "Entregas expressas em até 45 minutos no seu bairro",
   theme: {
     primary: "#ea580c", // Laranja quente
@@ -46,6 +46,14 @@ export const pizzariaConfig = {
     facebook: "https://facebook.com/fornobasilico",
   },
   businessHours: {
-    enabled: false,
+    enabled: true,
+    schedule: {
+      monday: { closed: true },
+      tuesday: { open: "18:00", close: "23:30" },
+      wednesday: { closed: true },
+      thursday: { open: "18:00", close: "23:30" },
+      friday: { open: "18:00", close: "23:30" },
+      saturday: { open: "18:00", close: "23:30" },
+    },
   },
 };

@@ -101,6 +101,7 @@ export interface SiteConfig {
   name: string;
   tagline: string;
   logoUrl?: string;
+  instagramUrl?: string;
   whatsappNumber: string;
   shippingNotice?: string;
   theme: SiteTheme;

@@ -1,0 +1,76 @@
+---
+import type { SiteConfig } from '../../types';
+
+interface Props {
+  config: SiteConfig;
+}
+
+const { config } = Astro.props;
+const currentYear = new Date().getFullYear();
+const whatsapp = config.socials?.whatsapp || config.whatsappNumber;
+const cleanPhone = whatsapp ? whatsapp.replace(/\D/g, '') : '';
+---
+
+<div id="book-backcover-spread" class="hidden grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-10 h-full">
+  <div id="back-contact-page" class="bg-[#FCFCFA] rounded-xl sm:rounded-2xl p-4 sm:p-8 flex flex-col justify-between h-full border border-[#EBE8E1]">
+    <div>
+      <span class="text-[9px] font-mono uppercase tracking-[0.25em] text-[#9E978F]">Atendimento Exclusivo</span>
+      <h3 class="font-serif text-xl text-[#1A1918] font-normal tracking-tight mt-1 mb-4">Concierge & Encomendas</h3>
+
+      <div class="space-y-3 text-xs text-[#6B645D] font-light leading-relaxed">
+        <p class="flex items-start gap-2">
+          <span>Endereço:</span> 
+          <span class="font-normal text-[#2B2927]">{config.contact?.address || "Atendimento sob demanda"}</span>
+        </p>
+        {config.contact?.businessHours && (
+          <p class="flex items-start gap-2">
+            <span>Horários:</span> 
+            <span class="font-normal text-[#2B2927]">{config.contact.businessHours}</span>
+          </p>
+        )}
+      </div>
+    </div>
+
+    <div class="pt-4 border-t border-[#ECE8E1]">
+      {cleanPhone && (
+        <a 
+          href={`https://wa.me/${cleanPhone}`} 
+          target="_blank" 
+          class="inline-block w-full py-3 text-center border border-[#1A1918] text-[#1A1918] hover:bg-[#1A1918] hover:text-[#FAF8F5] text-[11px] font-medium tracking-[0.2em] uppercase rounded-lg transition-all"
+        >
+          Conversar com Atendente
+        </a>
+      )}
+    </div>
+  </div>
+
+  <!-- Contracapa Direita: Informações & Reiniciar -->
+  <div id="back-checkout-page" class="bg-[#FCFCFA] rounded-xl sm:rounded-2xl p-4 sm:p-8 flex flex-col justify-between h-full border border-[#EBE8E1]">
+    <div>
+      <span class="text-[9px] font-mono uppercase tracking-[0.25em] text-[#9E978F]">Finalização</span>
+      <h3 class="font-serif text-xl text-[#1A1918] font-normal tracking-tight mt-1 mb-3">Garantia & Pagamento</h3>
+      <p class="text-xs text-[#7A736E] font-light leading-relaxed mb-4">
+        Transações protegidas. O resumo do seu pedido é validado diretamente com o estabelecimento para garantir personalização total.
+      </p>
+
+      <div class="flex gap-2">
+        <span class="text-[10px] tracking-widest font-mono text-[#524D47] bg-[#F2EFE9] px-2.5 py-1 rounded">PIX</span>
+        <span class="text-[10px] tracking-widest font-mono text-[#524D47] bg-[#F2EFE9] px-2.5 py-1 rounded">CARTÃO</span>
+      </div>
+    </div>
+
+    <div>
+      <button
+        id="backcover-restart-btn"
+        type="button"
+        class="w-full mb-4 py-3 bg-[#F2EFE9] hover:bg-[#E5E0D6] text-[#2B2927] text-[10px] font-medium tracking-[0.2em] uppercase rounded-lg transition-all cursor-pointer"
+      >
+        Voltar à Capa
+      </button>
+
+      <div class="text-center text-[10px] text-[#A8A29A] font-mono border-t border-[#ECE8E1] pt-3">
+        © {currentYear} {config.name}. Edição Digital.
+      </div>
+    </div>
+  </div>
+</div>

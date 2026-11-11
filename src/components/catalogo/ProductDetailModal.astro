@@ -1,0 +1,135 @@
+---
+---
+
+<div 
+  id="product-detail-modal" 
+  class="fixed inset-0 z-50 invisible opacity-0 pointer-events-none transition-all duration-300 font-sans flex items-center justify-center p-4 sm:p-6"
+>
+  <!-- Backdrop Blur -->
+  <div id="detail-modal-backdrop" class="absolute inset-0 bg-[#121110]/50 backdrop-blur-sm cursor-pointer transition-opacity"></div>
+
+  <!-- Cartão de Detalhes com Moldura Nobre -->
+  <div class="relative bg-[#FAF9F5] w-full max-w-md rounded-2xl shadow-[0_20px_50px_rgba(20,15,10,0.25)] border border-[#E8E4DA] overflow-hidden z-10 transform scale-95 transition-transform duration-300">
+    
+    <!-- Imagem em destaque -->
+    <div class="relative w-full aspect-16/10 bg-[#ECE8DE] overflow-hidden">
+      <img id="detail-modal-img" src="" alt="" class="w-full h-full object-cover filter contrast-[1.02]" />
+      <button 
+        id="detail-modal-close" 
+        type="button" 
+        class="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center backdrop-blur-xs transition-colors cursor-pointer"
+        aria-label="Fechar detalhes"
+      >
+        ✕
+      </button>
+
+      <span id="detail-modal-badge" class="hidden absolute bottom-3 left-3 text-[8px] uppercase tracking-[0.15em] font-medium px-2.5 py-1 rounded-full bg-[#1A1918] text-[#E7DEC8]"></span>
+    </div>
+
+    <!-- Conteúdo -->
+    <div class="p-5 sm:p-6">
+      <span id="detail-modal-category" class="text-[9px] uppercase tracking-[0.25em] font-mono text-[#8C827A] block mb-1"></span>
+      <h3 id="detail-modal-title" class="font-serif text-2xl text-[#1A1918] font-normal tracking-tight mb-3"></h3>
+      
+      <div class="border-t border-[#ECE7DF] pt-3">
+        <span class="text-[9px] font-mono uppercase tracking-[0.2em] text-[#A69E94] block mb-1.5">Composição & Notas</span>
+        <p id="detail-modal-desc" class="text-xs sm:text-[13px] text-[#524D48] font-light leading-relaxed max-h-48 overflow-y-auto pr-1"></p>
+      </div>
+
+      <div class="mt-6 pt-3 border-t border-[#ECE7DF] flex justify-end">
+        <button 
+          id="detail-modal-ok-btn"
+          type="button" 
+          class="px-4 py-2 bg-[#1A1918] text-[#FAF9F5] text-[10px] font-medium tracking-[0.2em] uppercase rounded-lg hover:bg-[#2E2A27] transition-all cursor-pointer"
+        >
+          Retornar ao Catálogo
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .font-serif {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+  }
+</style>
+
+<script>
+  function initDetailModal() {
+    const modal = document.getElementById('product-detail-modal');
+    const backdrop = document.getElementById('detail-modal-backdrop');
+    const closeBtn = document.getElementById('detail-modal-close');
+    const okBtn = document.getElementById('detail-modal-ok-btn');
+
+    const titleEl = document.getElementById('detail-modal-title');
+    const descEl = document.getElementById('detail-modal-desc');
+    const imgEl = document.getElementById('detail-modal-img') as HTMLImageElement | null;
+    const badgeEl = document.getElementById('detail-modal-badge');
+    const catEl = document.getElementById('detail-modal-category');
+
+    function openModal(data: { name: string; desc: string; img: string; badge: string; category: string }) {
+      if (!modal) return;
+      if (titleEl) titleEl.textContent = data.name;
+      if (descEl) descEl.textContent = data.desc;
+      if (imgEl && data.img) {
+        imgEl.src = data.img;
+        imgEl.alt = data.name;
+      }
+      if (catEl) catEl.textContent = data.category;
+      if (badgeEl) {
+        if (data.badge) {
+          badgeEl.textContent = data.badge;
+          badgeEl.classList.remove('hidden');
+        } else {
+          badgeEl.classList.add('hidden');
+        }
+      }
+
+      modal.classList.remove('invisible', 'opacity-0', 'pointer-events-none');
+      const innerCard = modal.querySelector('div:nth-child(2)');
+      innerCard?.classList.remove('scale-95');
+      innerCard?.classList.add('scale-100');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      if (!modal) return;
+      const innerCard = modal.querySelector('div:nth-child(2)');
+      innerCard?.classList.add('scale-95');
+      innerCard?.classList.remove('scale-100');
+      modal.classList.add('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        modal.classList.add('invisible');
+        document.body.style.overflow = '';
+      }, 250);
+    }
+
+    // Escuta cliques nos botões "...ver mais"
+    document.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest('[data-open-desc-btn]') as HTMLElement | null;
+      if (!btn) return;
+
+      openModal({
+        name: btn.dataset.prodName || '',
+        desc: btn.dataset.prodDesc || '',
+        img: btn.dataset.prodImg || '',
+        badge: btn.dataset.prodBadge || '',
+        category: btn.dataset.prodCategory || ''
+      });
+    });
+
+    closeBtn?.addEventListener('click', closeModal);
+    okBtn?.addEventListener('click', closeModal);
+    backdrop?.addEventListener('click', closeModal);
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal && !modal.classList.contains('invisible')) {
+        closeModal();
+      }
+    });
+  }
+
+  initDetailModal();
+  document.addEventListener('astro:page-load', initDetailModal);
+</script>

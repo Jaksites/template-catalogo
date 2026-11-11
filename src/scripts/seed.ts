@@ -41,7 +41,8 @@ const storeData = {
   whatsappNumber: siteConfig.whatsappNumber || "",
   shippingNotice: siteConfig.shippingNotice || "",
   isStoreOpen24h: !siteConfig.businessHours?.enabled,
-  closedMessage: siteConfig.businessHours?.closedMessage || "",
+  closedMessage:
+    (siteConfig.businessHours as any)?.closedMessage || "",
   instagramUrl:
     siteConfig.socials?.instagram || (siteConfig as any).instagramUrl || "",
   facebookUrl: siteConfig.socials?.facebook || "",

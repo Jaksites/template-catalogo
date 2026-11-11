@@ -1,97 +1,122 @@
 ---
-// src/components/catalogo/CartFloatingBar.astro
+import type { SiteConfig } from '../../types';
 
+interface Props {
+  config?: SiteConfig;
+  isOpen?: boolean;
+}
 
+const { isOpen = true } = Astro.props;
 ---
 
 <aside 
   id="cart-floating-bar" 
-  class="fixed bottom-3 inset-x-3 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 sm:w-full sm:max-w-md z-40 transform translate-y-32 opacity-0 pointer-events-none transition-all duration-300 ease-out"
+  class=" sm:hidden fixed bottom-4 inset-x-3 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 sm:w-full sm:max-w-md z-40 transform translate-y-36 opacity-0 pointer-events-none transition-all duration-500 cubic-bezier(0.16, 1, 0.3, 1) font-sans"
+  data-store-open={isOpen ? 'true' : 'false'}
 >
-  <div class="bg-neutral-950/95 backdrop-blur-md text-white p-3 sm:p-3.5 rounded-2xl shadow-2xl flex items-center justify-between gap-3 border border-neutral-800">
+  <!-- Caixa Flutuante Monolítica: Fundo Noir profundo com borda sutil e sombra difusa -->
+  <div class="relative overflow-hidden bg-[#181716]/95 backdrop-blur-md text-[#FAF9F5] p-3 sm:p-3.5 rounded-2xl shadow-[0_15px_40px_rgba(20,15,10,0.35)] flex items-center justify-between gap-3 border border-[#2D2A26]">
     
-    <!-- Resumo dos itens -->
-    <div class="flex items-center gap-3 min-w-0">
-      <div class="relative w-9 h-9 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center shrink-0 text-white">
-        <svg class="w-4 h-4 stroke-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <!-- Linha de detalhe nobre no topo da barra (fio sutil de latão/ouro velho) -->
+    <div class="absolute top-0 left-6 right-6 h-px bg-linear-to-r from-transparent via-[#C5A880]/40 to-transparent"></div>
+
+    <!-- Resumo Editorial dos Itens -->
+    <div class="flex items-center gap-3.5 min-w-0 pl-1">
+      <!-- Ícone de Sacola com Badge Integrada -->
+      <div class="relative w-10 h-10 rounded-xl bg-[#242220] border border-[#33302B] flex items-center justify-center shrink-0 text-[#E5DFD5]">
+        <svg class="w-4 h-4 stroke-[1.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
         </svg>
-        <span id="floating-cart-count" class="absolute -top-1.5 -right-1.5 bg-brand-primary text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-sm">
-          0
-        </span>
+        <span 
+  id="floating-cart-count" 
+  class="absolute -top-1 -right-1 text-white text-[9px] font-mono font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-xs"
+  style="background-color: var(--brand-primary, #C5A880);"
+>
+  0
+</span>
       </div>
 
+      <!-- Textos com tipografia editorial -->
       <div class="flex flex-col min-w-0">
-        <span class="text-[10px] sm:text-[11px] text-neutral-400 font-medium leading-tight">Total do Pedido</span>
-        <span id="floating-cart-total" class="text-sm sm:text-base font-black tracking-tight text-white truncate">
+        <span class="text-[9px] uppercase tracking-[0.22em] font-mono text-[#999187] leading-none">
+          {isOpen ? 'Seleção Atual' : 'Demonstração'}
+        </span>
+        <span id="floating-cart-total" class="font-serif text-lg sm:text-xl font-medium tracking-tight text-[#FAF9F5] truncate mt-1">
           R$ 0,00
         </span>
       </div>
     </div>
 
-    <!-- Botão de Ação -->
+    <!-- Botão de Ação Editorial: Bloco Branco Alabaster com Tipografia Clássica -->
     <button 
       type="button"
       id="btn-open-cart"
-      class="bg-brand-primary hover:brightness-110 active:scale-95 text-white font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl flex items-center gap-2 transition-transform shadow-md shrink-0 cursor-pointer"
+      class="group relative inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#FAF9F5] text-[#181716] text-[11px] font-medium tracking-[0.18em] uppercase transition-all duration-300 hover:bg-[#EAE6DE] active:scale-95 shrink-0 cursor-pointer shadow-sm"
     >
       <span>Ver Sacola</span>
-      <svg class="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-      </svg>
+      <span class="font-serif text-sm transition-transform duration-300 group-hover:translate-x-0.5">→</span>
     </button>
+
   </div>
 </aside>
+
+<style>
+  .font-serif {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+  }
+</style>
 
 <script>
   import { getCartTotals } from '../../scripts/cartStore';
 
-  const floatingBar = document.getElementById('cart-floating-bar');
-  const countEl = document.getElementById('floating-cart-count');
-  const totalEl = document.getElementById('floating-cart-total');
-  const openCartBtn = document.getElementById('btn-open-cart');
+  function initFloatingBar() {
+    const floatingBar = document.getElementById('cart-floating-bar');
+    const countEl = document.getElementById('floating-cart-count');
+    const totalEl = document.getElementById('floating-cart-total');
+    const openCartBtn = document.getElementById('btn-open-cart');
 
-  
-
- 
-
-  function renderFloatingBar() {
     if (!floatingBar || !countEl || !totalEl) return;
 
-    const { totalCount, totalPrice } = getCartTotals();
+    function renderFloatingBar() {
+  const { totalCount, totalPrice } = getCartTotals();
+  const footerEl = document.getElementById('catalog-footer');
 
-    if (totalCount > 0) {
-      countEl.textContent = totalCount.toString();
-      totalEl.textContent = `R$ ${totalPrice.toFixed(2).replace('.', ',')}`;
-      
-      // Animação de entrada
-      floatingBar.classList.remove('translate-y-32', 'opacity-0', 'pointer-events-none');
-      floatingBar.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
-      
-      
-    } else {
-      // Animação de saída
-      floatingBar.classList.add('translate-y-32', 'opacity-0', 'pointer-events-none');
-      floatingBar.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
-      
-     
+  if (totalCount > 0) {
+    countEl!.textContent = totalCount.toString();
+    totalEl!.textContent = `R$ ${totalPrice.toFixed(2).replace('.', ',')}`;
+    
+    // Mostra a barra flutuante
+    floatingBar?.classList.remove('translate-y-36', 'opacity-0', 'pointer-events-none');
+    floatingBar?.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
+
+    // Dá um respiro adicional ao rodapé quando a barra está ativa
+    if (footerEl) {
+      footerEl.classList.add('pb-36');
+      footerEl.classList.remove('pb-24');
+    }
+  } else {
+    // Esconde a barra flutuante
+    floatingBar?.classList.add('translate-y-36', 'opacity-0', 'pointer-events-none');
+    floatingBar?.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
+
+    // Volta o padding normal quando a sacola está vazia
+    if (footerEl) {
+      footerEl.classList.remove('pb-36');
+      footerEl.classList.add('pb-24');
     }
   }
+}
 
-  // 1. Atualiza ao carregar
-  renderFloatingBar();
+    renderFloatingBar();
 
-  // 2. Escuta atualizações do carrinho
-  window.addEventListener('cart:updated', renderFloatingBar);
+    // Escuta eventos disparados pelo Store e pelo Astro
+    window.addEventListener('cart:updated', renderFloatingBar);
 
-  // 3. Reajusta em caso de redimensionamento da tela
-  window.addEventListener('resize', () => {
-    const { totalCount } = getCartTotals();
-  
-  });
+    openCartBtn?.addEventListener('click', () => {
+      window.dispatchEvent(new CustomEvent('cart:open'));
+    });
+  }
 
-  // 4. Ao clicar em 'Ver Sacola', abre o drawer
-  openCartBtn?.addEventListener('click', () => {
-    window.dispatchEvent(new CustomEvent('cart:open'));
-  });
+  initFloatingBar();
+  document.addEventListener('astro:page-load', initFloatingBar);
 </script>

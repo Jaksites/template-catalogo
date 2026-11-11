@@ -1,10 +1,9 @@
 ---
 import Header from '../components/catalogo/Header.astro';
-import Footer from '../components/catalogo/Footer.astro';
 import CartDrawer from '../components/catalogo/CartDrawer.astro';
 import CheckoutModal from '../components/catalogo/CheckoutModal.astro';
-import ProductModal from '../components/catalogo/ProductModal.astro'; 
-import WhatsAppButton from '../components/catalogo/WhatsAppButton.astro';
+import ProductDetailModal from '../components/catalogo/ProductDetailModal.astro';
+
 import { siteConfig as defaultSiteConfig } from '../config/active';
 import type { SiteConfig } from '../types';
 import '../styles/global.css';
@@ -21,7 +20,7 @@ const {
   config = defaultSiteConfig, 
   title = `${config.name} | Catálogo Virtual`, 
   description = config.tagline,
-  image = '/og-image.jpg', // Coloque uma imagem padrão no diretório public/
+  image = '/og-image.jpg',
   canonicalUrl = Astro.url.href
 } = Astro.props;
 
@@ -42,7 +41,6 @@ const siteUrl = Astro.site ? new URL(image, Astro.site).href : new URL(image, As
   `}
 >
   <head>
-    <!-- Meta Tags Essenciais -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
@@ -50,7 +48,7 @@ const siteUrl = Astro.site ? new URL(image, Astro.site).href : new URL(image, As
     <link rel="canonical" href={canonicalUrl} />
     <meta name="robots" content="index, follow" />
 
-    <!-- Open Graph / Facebook / WhatsApp -->
+    <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:title" content={title} />
@@ -59,35 +57,35 @@ const siteUrl = Astro.site ? new URL(image, Astro.site).href : new URL(image, As
     <meta property="og:site_name" content={config.name} />
     <meta property="og:locale" content="pt_BR" />
 
-    <!-- Twitter Cards -->
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content={canonicalUrl} />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={siteUrl} />
 
-    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    <!-- Fontes e Ícones -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   </head>
-  <body class="bg-brand-surface text-gray-800 min-h-screen flex flex-col justify-between selection:bg-brand-accent selection:text-brand-accentText">
-    <Header config={config as SiteConfig} />
+  
+  <!-- Fundo contínuo #F7F6F2, sem o justify-between que esticava os espaços -->
+   <body class="bg-[#F7F6F2] text-gray-800 min-h-dvh flex flex-col selection:bg-brand-accent selection:text-brand-accentText relative pb-28 sm:pb-4 overflow-x-hidden">
+    
+    <Header config={config} />
 
-    <main class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10 w-full grow">
+    <!-- main flex-grow normal permitindo scroll natural -->
+    <main class="grow w-full flex flex-col justify-center pt-1 sm:pt-2 relative">
+      <div class="absolute inset-0 bg-radial from-amber-500/3 via-transparent to-transparent pointer-events-none"></div>
       <slot />
     </main>
 
-    <Footer config={config as SiteConfig} />
-
-    <CartDrawer />
+    <CartDrawer config={config} />
     <CheckoutModal whatsappNumber={config.whatsappNumber} />
-    <ProductModal />
-    <WhatsAppButton phone={config.whatsappNumber} />
+      <ProductDetailModal />
 
     <script is:inline>
       document.addEventListener('DOMContentLoaded', () => {
