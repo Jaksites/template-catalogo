@@ -9,66 +9,148 @@ const { config } = Astro.props;
 const currentYear = new Date().getFullYear();
 const whatsapp = config.socials?.whatsapp || config.whatsappNumber;
 const cleanPhone = whatsapp ? whatsapp.replace(/\D/g, '') : '';
+
+// Endereço e geração do URL do Google Maps (não precisa de API Key)
+const address = config.contact?.address;
+const encodedAddress = address ? encodeURIComponent(address) : null;
+const mapEmbedUrl = encodedAddress 
+  ? `https://maps.google.com/maps?q=${encodedAddress}&t=&z=15&ie=UTF8&iwloc=&output=embed`
+  : null;
+const mapExternalUrl = encodedAddress 
+  ? `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`
+  : null;
+
+// Formas de pagamento aceitas (com labels formatadas)
+const paymentMethodLabels: Record<string, string> = {
+  pix: 'PIX',
+  credit_card: 'CRÉDITO',
+  debit_card: 'DÉBITO',
+  money: 'DINHEIRO',
+  cartao: 'CARTÃO',
+};
+
+const acceptedPayments = config.paymentMethods && config.paymentMethods.length > 0
+  ? config.paymentMethods.map(m => paymentMethodLabels[m.toLowerCase()] || m.toUpperCase())
+  : ['PIX', 'CRÉDITO', 'DÉBITO', 'DINHEIRO'];
 ---
 
 <div id="book-backcover-spread" class="hidden grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-10 h-full">
-  <div id="back-contact-page" class="bg-[#FCFCFA] rounded-xl sm:rounded-2xl p-4 sm:p-8 flex flex-col justify-between h-full border border-[#EBE8E1]">
-    <div>
-      <span class="text-[9px] font-mono uppercase tracking-[0.25em] text-[#9E978F]">Atendimento Exclusivo</span>
-      <h3 class="font-serif text-xl text-[#1A1918] font-normal tracking-tight mt-1 mb-4">Concierge & Encomendas</h3>
+  <!-- Contracapa Esquerda: Localização & Atendimento -->
+  <div id="back-contact-page" class="bg-[#FCFCFA] rounded-xl sm:rounded-2xl p-4 sm:p-7 flex flex-col justify-between h-full border border-[#EBE8E1]">
+    <div class="flex flex-col flex-1">
+      <span class="text-[9px] font-mono uppercase tracking-[0.25em] text-[#9E978F]">Atendimento & Retirada</span>
+      <h3 class="font-serif text-xl text-[#1A1918] font-normal tracking-tight mt-1 mb-3">Onde nos Encontrar</h3>
 
-      <div class="space-y-3 text-xs text-[#6B645D] font-light leading-relaxed">
-        <p class="flex items-start gap-2">
-          <span>Endereço:</span> 
-          <span class="font-normal text-[#2B2927]">{config.contact?.address || "Atendimento sob demanda"}</span>
-        </p>
-        {config.contact?.businessHours && (
-          <p class="flex items-start gap-2">
-            <span>Horários:</span> 
-            <span class="font-normal text-[#2B2927]">{config.contact.businessHours}</span>
-          </p>
-        )}
-      </div>
-    </div>
+      <!-- Informações de Contato -->
+    <div class="space-y-1.5 text-xs text-[#6B645D] font-light leading-snug mb-3">
+  <p class="flex items-baseline gap-2">
+    <span class="text-[#9E978F] font-mono text-[10px] uppercase shrink-0">Endereço:</span> 
+    <span class="font-normal text-[#2B2927]">{address || "Atendimento sob demanda / Delivery"}</span>
+  </p>
+  {config.contact?.businessHours && (
+    <p class="flex items-baseline gap-2">
+      <span class="text-[#9E978F] font-mono text-[10px] uppercase shrink-0">Horários:</span> 
+      <span class="font-normal text-[#2B2927]">{config.contact.businessHours}</span>
+    </p>
+  )}
+</div>
 
-    <div class="pt-4 border-t border-[#ECE8E1]">
-      {cleanPhone && (
-        <a 
-          href={`https://wa.me/${cleanPhone}`} 
-          target="_blank" 
-          class="inline-block w-full py-3 text-center border border-[#1A1918] text-[#1A1918] hover:bg-[#1A1918] hover:text-[#FAF8F5] text-[11px] font-medium tracking-[0.2em] uppercase rounded-lg transition-all"
-        >
-          Conversar com Atendente
-        </a>
+      <!-- Mapa do Google -->
+      {mapEmbedUrl ? (
+        <div class="relative w-full flex-1 min-h-35 max-h-45 rounded-lg overflow-hidden border border-[#EBE8E1] bg-[#F4F1EA] shadow-inner mb-2">
+          <iframe
+            src={mapEmbedUrl}
+            width="100%"
+            height="100%"
+            style="border:0;"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            class="opacity-90 contrast-[0.95] hover:opacity-100 transition-opacity"
+            title="Localização no Google Maps"
+          ></iframe>
+        </div>
+      ) : null}
+
+      {mapExternalUrl && (
+        <div class="mb-2 text-right">
+          <a 
+            href={mapExternalUrl} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="text-[9px] font-mono uppercase tracking-wider text-[#8A847C] hover:text-[#1A1918] transition-colors inline-flex items-center gap-1"
+          >
+            Abrir rota no Maps ↗
+          </a>
+        </div>
       )}
     </div>
+
+   <div class="pt-3 border-t border-[#ECE8E1]">
+  {cleanPhone && (
+    <a 
+      href={`https://wa.me/${cleanPhone}`} 
+      target="_blank" 
+      rel="noopener noreferrer"
+      class="group inline-flex items-center justify-center gap-2 w-full py-2.5 sm:py-3 text-center border border-[#1A1918] text-[#1A1918] hover:bg-[#1A1918] hover:text-[#FAF8F5] text-[10px] sm:text-[11px] font-medium tracking-[0.2em] uppercase rounded-lg transition-all"
+    >
+      <svg 
+        class="w-3.5 h-3.5 shrink-0 transition-transform duration-200 group-hover:scale-110" 
+        viewBox="0 0 24 24" 
+        fill="none" 
+        stroke="currentColor" 
+        stroke-width="1.8" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"
+      >
+        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+      </svg>
+      <span>Conversar no WhatsApp</span>
+    </a>
+  )}
+</div>
   </div>
 
-  <!-- Contracapa Direita: Informações & Reiniciar -->
-  <div id="back-checkout-page" class="bg-[#FCFCFA] rounded-xl sm:rounded-2xl p-4 sm:p-8 flex flex-col justify-between h-full border border-[#EBE8E1]">
+  <!-- Contracapa Direita: Garantia, Pagamentos & Finalização -->
+  <div id="back-checkout-page" class="bg-[#FCFCFA] rounded-xl sm:rounded-2xl p-4 sm:p-7 flex flex-col justify-between h-full border border-[#EBE8E1]">
     <div>
-      <span class="text-[9px] font-mono uppercase tracking-[0.25em] text-[#9E978F]">Finalização</span>
-      <h3 class="font-serif text-xl text-[#1A1918] font-normal tracking-tight mt-1 mb-3">Garantia & Pagamento</h3>
-      <p class="text-xs text-[#7A736E] font-light leading-relaxed mb-4">
-        Transações protegidas. O resumo do seu pedido é validado diretamente com o estabelecimento para garantir personalização total.
-      </p>
+      <span class="text-[9px] font-mono uppercase tracking-[0.25em] text-[#9E978F]">Finalização Direta</span>
+      <h3 class="font-serif text-xl text-[#1A1918] font-normal tracking-tight mt-1 mb-2">Garantia & Pagamento</h3>
+      
+      <!-- Explicação do fluxo via WhatsApp -->
+      <div class="bg-[#F8F6F0] border border-[#EAE6DC] p-3 rounded-lg mb-4 text-[#524D47] text-xs font-light leading-relaxed">
+        <p class="mb-1.5 font-medium text-[#2B2927] flex items-center gap-1.5">
+          <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+          Pedido finalizado pelo WhatsApp
+        </p>
+        <p class="text-[11px] text-[#6B645D]">
+          Ao enviar a sacola, nossa cozinha recebe sua comanda e confirma o tempo de preparo e entrega. O pagamento é acordado e concluído com segurança diretamente pelo chat ou na entrega.
+        </p>
+      </div>
 
-      <div class="flex gap-2">
-        <span class="text-[10px] tracking-widest font-mono text-[#524D47] bg-[#F2EFE9] px-2.5 py-1 rounded">PIX</span>
-        <span class="text-[10px] tracking-widest font-mono text-[#524D47] bg-[#F2EFE9] px-2.5 py-1 rounded">CARTÃO</span>
+      <!-- Métodos de Pagamento Aceitos -->
+      <div>
+        <span class="block text-[9px] font-mono uppercase tracking-widest text-[#9E978F] mb-2">Formas de Pagamento Aceitas:</span>
+        <div class="flex flex-wrap gap-1.5">
+          {acceptedPayments.map((method) => (
+            <span class="text-[9px] tracking-widest font-mono text-[#423E3A] bg-[#F2EFE9] border border-[#E5E0D6] px-2.5 py-1 rounded">
+              {method}
+            </span>
+          ))}
+        </div>
       </div>
     </div>
 
-    <div>
+    <div class="pt-4">
       <button
         id="backcover-restart-btn"
         type="button"
-        class="w-full mb-4 py-3 bg-[#F2EFE9] hover:bg-[#E5E0D6] text-[#2B2927] text-[10px] font-medium tracking-[0.2em] uppercase rounded-lg transition-all cursor-pointer"
+        class="w-full mb-3 py-2.5 sm:py-3 bg-[#F2EFE9] hover:bg-[#E5E0D6] text-[#2B2927] text-[10px] font-medium tracking-[0.2em] uppercase rounded-lg transition-all cursor-pointer"
       >
-        Voltar à Capa
+        Voltar ao Início
       </button>
 
-      <div class="text-center text-[10px] text-[#A8A29A] font-mono border-t border-[#ECE8E1] pt-3">
+      <div class="text-center text-[9px] text-[#A8A29A] font-mono border-t border-[#ECE8E1] pt-3">
         © {currentYear} {config.name}. Edição Digital.
       </div>
     </div>

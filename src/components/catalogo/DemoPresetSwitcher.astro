@@ -3,9 +3,16 @@
 interface Props {
   currentPreset: string;
   presetsList: Array<{ slug: string; name: string }>;
+  basePath?: string; // Opcional: caso queira forçar um prefixo como '/catalogo'
 }
 
-const { currentPreset, presetsList } = Astro.props;
+const { currentPreset, presetsList, basePath } = Astro.props;
+
+// Detecta o caminho base automaticamente (funciona se estiver na raiz /[niche] ou em subpastas /catalogo/[niche])
+const pathSegments = Astro.url.pathname.split('/').filter(Boolean);
+const detectedBase = basePath !== undefined 
+  ? basePath 
+  : (pathSegments.length > 1 ? `/${pathSegments.slice(0, -1).join('/')}` : '');
 ---
 
 <nav aria-label="Seletor de Demonstrações" class="w-full bg-[#161514] text-[#FAF8F5] border-b border-[#2B2926] sticky top-0 z-40 shadow-md">
@@ -23,12 +30,15 @@ const { currentPreset, presetsList } = Astro.props;
     <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
       {presetsList.map((item) => {
         const isActive = item.slug.toLowerCase() === currentPreset.toLowerCase();
+        // Gera o link correto para a rota estática (ex: /pizzaria ou /demo/pizzaria)
+        const targetUrl = `${detectedBase}/${item.slug.toLowerCase()}`;
+
         return (
           <a
-            href={`?preset=${item.slug.toLowerCase()}`}
+            href={targetUrl}
             class={`px-3 py-1.5 rounded-lg text-[11px] font-medium tracking-wider whitespace-nowrap transition-all duration-200 cursor-pointer ${
               isActive
-                ? 'bg-[#FAF8F5] text-[#161514] shadow-xs'
+                ? 'bg-[#FAF8F5] text-[#161514] shadow-xs font-semibold'
                 : 'text-[#9E978F] hover:text-[#FAF8F5] hover:bg-white/5'
             }`}
           >
@@ -42,7 +52,6 @@ const { currentPreset, presetsList } = Astro.props;
 </nav>
 
 <style>
-  /* Esconde barra de rolagem horizontal */
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }

@@ -67,7 +67,7 @@ const { whatsappNumber } = Astro.props;
             <svg class="w-3.5 h-3.5 stroke-[1.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.25A2.25 2.25 0 010 18.75V10.5m16.5 10.5h5.25A2.25 2.25 0 0024 18.75V10.5M9 7.5l3-3 3 3M3 10.5h18" />
             </svg>
-            <span>Retirada no Local</span>
+            <span>Retirada </span>
           </label>
         </div>
       </div>
@@ -143,19 +143,19 @@ const { whatsappNumber } = Astro.props;
           <label class="payment-card flex flex-col items-center justify-center p-2.5 rounded-xl border border-[#1A1918] bg-[#1A1918] text-[#FAF8F5] cursor-pointer text-center transition-all">
             <input type="radio" name="payment-method" value="Pix (Imediato)" checked class="hidden" />
             <span class="font-mono text-xs font-semibold tracking-wider">PIX</span>
-            <span class="text-[9px] text-[#A69E94] mt-0.5">Aprovação Imediata</span>
+           
           </label>
 
           <label class="payment-card flex flex-col items-center justify-center p-2.5 rounded-xl border border-[#DFDBD1] bg-white text-[#575048] cursor-pointer text-center transition-all hover:border-[#8C847A]">
             <input type="radio" name="payment-method" value="Cartão de Crédito" class="hidden" />
             <span class="font-mono text-xs font-medium tracking-wider">CARTÃO</span>
-            <span class="text-[9px] text-[#9E978E] mt-0.5">Link / Maquininha</span>
+            
           </label>
 
           <label class="payment-card flex flex-col items-center justify-center p-2.5 rounded-xl border border-[#DFDBD1] bg-white text-[#575048] cursor-pointer text-center transition-all hover:border-[#8C847A]">
             <input type="radio" name="payment-method" value="Dinheiro" class="hidden" />
             <span class="font-mono text-xs font-medium tracking-wider">OUTROS</span>
-            <span class="text-[9px] text-[#9E978E] mt-0.5">Dinheiro / Faturado</span>
+            
           </label>
         </div>
       </div>
@@ -176,7 +176,7 @@ const { whatsappNumber } = Astro.props;
         type="submit" 
         class="w-full mt-2 py-3.5 bg-[#1A1918] hover:bg-[#2C2926] text-[#FAF8F5] text-xs font-medium tracking-[0.2em] uppercase rounded-xl flex items-center justify-center gap-2 transition-all duration-300 shadow-sm active:scale-[0.99] cursor-pointer"
       >
-        <span>Transmitir Pedido via WhatsApp</span>
+        <span>Pedir via WhatsApp</span>
         <span class="font-serif text-sm">→</span>
       </button>
     </form>

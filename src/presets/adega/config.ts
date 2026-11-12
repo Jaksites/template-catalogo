@@ -48,8 +48,7 @@ export const adegaConfig = {
   },
   businessHours: {
     enabled: true,
-    closedMessage:
-      "Adega fechada no momento. Atendimento de Terça a Sábado a partir das 14h.",
+    closedMessage: "Fechado no momento. Abre as 14:00",
     schedule: {
       segunda: { open: "00:00", close: "00:00", closed: true },
       terca: { open: "14:00", close: "23:00" },

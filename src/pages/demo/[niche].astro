@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import CatalogBook from '../../components/catalogo/CatalogBook.astro';
 import CartFloatingBar from '../../components/catalogo/CartFloatingBar.astro';
 import FooterMinimal from '../../components/catalogo/Footer.astro';
+import DemoPresetSwitcher from '../../components/catalogo/DemoPresetSwitcher.astro';
 import { presets } from '../../presets';
 
 // 1. Gera todas as rotas estáticas para os nichos
@@ -18,15 +19,23 @@ const { currentPreset } = Astro.props;
 const currentConfig = currentPreset.config;
 const currentProducts = currentPreset.products;
 
-// Lista de todos os nichos disponíveis para o Seletor/Switcher
+// 3. Monta a lista formatada para o Switcher
 const allPresets = Object.values(presets);
+const presetsList = allPresets.map((p) => ({
+  slug: p.slug,
+  name: p.name,
+}));
 ---
 
 <BaseLayout config={currentConfig} title={`${currentPreset.name} | Catálogo Digital`}>
   
-  
+  <!-- BARRA SWITCHER FIXA NO TOPO -->
+  <DemoPresetSwitcher 
+    currentPreset={currentPreset.slug} 
+    presetsList={presetsList} 
+  />
 
-  <!-- LIVRO CENTRAL DO CATÁLOGO: Agora recebe os dados DINÂMICOS do nicho atual -->
+  <!-- LIVRO CENTRAL DO CATÁLOGO -->
   <div class="relative z-10 w-full flex justify-center py-1 sm:py-2">
     <CatalogBook 
       config={currentConfig} 
@@ -44,7 +53,6 @@ const allPresets = Object.values(presets);
 </BaseLayout>
 
 <style>
-  /* Esconde a barra de rolagem horizontal nativa mantendo o swipe no celular */
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }

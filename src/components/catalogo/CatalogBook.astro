@@ -77,14 +77,15 @@ const categories = ['Todos', ...Array.from(new Set(products.map(p => p.category)
     categories={categories} 
   />
 
-      <div id="catalog-products-stage" class="hidden grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-10 h-full">
-        {normalizedProducts.map((product, index) => (
-          <CatalogProductCard product={product} index={index} />
-        ))}
-<article id="catalog-blank-page" class="hidden flex-col items-center justify-center bg-white/40 rounded-xl sm:rounded-2xl border border-dashed border-[#DFDBD3] text-center p-4 h-full">
-          <span class="text-[10px] font-mono uppercase tracking-[0.25em] text-[#A39E96]">Página Final</span>
-        </article>
-      </div>
+        <!-- Ajustado com items-stretch e padding uniforme -->
+    <div id="catalog-products-stage" class="hidden grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 md:gap-10 w-full items-stretch">
+      {normalizedProducts.map((product, index) => (
+        <CatalogProductCard product={product} index={index} />
+      ))}
+      <article id="catalog-blank-page" class="hidden flex-col items-center justify-center bg-white/40 rounded-xl sm:rounded-2xl border border-dashed border-[#DFDBD3] text-center p-4 min-h-full">
+        <span class="text-[10px] font-mono uppercase tracking-[0.25em] text-[#A39E96]">Página Final</span>
+      </article>
+    </div>
 
       <CatalogBackCover config={config} />
     </div>
