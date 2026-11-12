@@ -3,124 +3,278 @@
 
 <div 
   id="product-detail-modal" 
-  class="fixed inset-0 z-50 invisible opacity-0 pointer-events-none transition-all duration-300 font-sans flex items-center justify-center p-4 sm:p-6"
+  class="fixed inset-0 z-50 invisible opacity-0 pointer-events-none transition-all duration-300 font-sans flex items-center justify-center p-3 sm:p-6"
 >
   <!-- Backdrop Blur -->
-  <div id="detail-modal-backdrop" class="absolute inset-0 bg-[#121110]/50 backdrop-blur-sm cursor-pointer transition-opacity"></div>
+  <div id="detail-modal-backdrop" class="absolute inset-0 bg-[#121110]/60 backdrop-blur-sm cursor-pointer transition-opacity"></div>
 
-  <!-- Cartão de Detalhes com Moldura Nobre -->
-  <div class="relative bg-[#FAF9F5] w-full max-w-md rounded-2xl shadow-[0_20px_50px_rgba(20,15,10,0.25)] border border-[#E8E4DA] overflow-hidden z-10 transform scale-95 transition-transform duration-300">
+  <!-- Cartão do Modal -->
+  <div id="detail-modal-card" class="relative bg-[#FAF9F5] w-full max-w-lg rounded-2xl shadow-[0_20px_50px_rgba(20,15,10,0.3)] border border-[#E8E4DA] overflow-hidden z-10 transform scale-95 transition-transform duration-300 max-h-[92vh] flex flex-col">
     
-    <!-- Imagem em destaque -->
-    <div class="relative w-full aspect-16/10 bg-[#ECE8DE] overflow-hidden">
+    <!-- Imagem em Destaque -->
+    <div class="relative w-full aspect-video sm:aspect-16/10 bg-[#ECE8DE] shrink-0 overflow-hidden">
       <img id="detail-modal-img" src="" alt="" class="w-full h-full object-cover filter contrast-[1.02]" />
+      
       <button 
         id="detail-modal-close" 
         type="button" 
-        class="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center backdrop-blur-xs transition-colors cursor-pointer"
-        aria-label="Fechar detalhes"
+        class="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/50 hover:bg-black/75 text-white flex items-center justify-center backdrop-blur-xs transition-colors cursor-pointer text-sm"
+        aria-label="Fechar modal"
       >
         ✕
       </button>
 
-      <span id="detail-modal-badge" class="hidden absolute bottom-3 left-3 text-[8px] uppercase tracking-[0.15em] font-medium px-2.5 py-1 rounded-full bg-[#1A1918] text-[#E7DEC8]"></span>
+      <span id="detail-modal-badge" class="hidden absolute bottom-3 left-3 text-[8px] uppercase tracking-[0.15em] font-medium px-2.5 py-1 rounded-full bg-[#1A1918] text-[#FAF8F5]"></span>
     </div>
 
     <!-- Conteúdo -->
-    <div class="p-5 sm:p-6">
+    <div class="p-5 sm:p-6 overflow-y-auto flex-1">
       <span id="detail-modal-category" class="text-[9px] uppercase tracking-[0.25em] font-mono text-[#8C827A] block mb-1"></span>
-      <h3 id="detail-modal-title" class="font-serif text-2xl text-[#1A1918] font-normal tracking-tight mb-3"></h3>
+      <h3 id="detail-modal-title" class="font-serif text-xl sm:text-2xl text-[#1A1918] font-normal tracking-tight mb-2"></h3>
       
-      <div class="border-t border-[#ECE7DF] pt-3">
-        <span class="text-[9px] font-mono uppercase tracking-[0.2em] text-[#A69E94] block mb-1.5">Composição & Notas</span>
-        <p id="detail-modal-desc" class="text-xs sm:text-[13px] text-[#524D48] font-light leading-relaxed max-h-48 overflow-y-auto pr-1"></p>
+      <!-- Descrição -->
+      <div class="border-t border-[#ECE7DF] pt-2.5 mb-4">
+        <span class="text-[9px] font-mono uppercase tracking-[0.2em] text-[#A69E94] block mb-1">Composição</span>
+        <p id="detail-modal-desc" class="text-xs sm:text-[13px] text-[#524D48] font-light leading-relaxed"></p>
       </div>
 
-      <div class="mt-6 pt-3 border-t border-[#ECE7DF] flex justify-end">
-        <button 
-          id="detail-modal-ok-btn"
-          type="button" 
-          class="px-4 py-2 bg-[#1A1918] text-[#FAF9F5] text-[10px] font-medium tracking-[0.2em] uppercase rounded-lg hover:bg-[#2E2A27] transition-all cursor-pointer"
-        >
-          Retornar ao Catálogo
-        </button>
+      <!-- Área de Variações -->
+      <div id="detail-modal-variations-section" class="hidden border-t border-[#ECE7DF] pt-3">
+        <span class="text-[9px] font-mono uppercase tracking-[0.2em] text-[#A69E94] block mb-2">
+          Escolha uma Opção:
+        </span>
+        <div id="detail-modal-variations-list" class="flex flex-wrap gap-2"></div>
       </div>
     </div>
+
+    <!-- Barra de Rodapé Fixa com Preço e Ação -->
+    <div class="p-4 sm:p-5 bg-[#F4F1EA] border-t border-[#E8E4DA] flex items-center justify-between gap-3 shrink-0">
+      <div>
+        <span class="block text-[8px] uppercase tracking-[0.2em] text-[#8C827A] font-mono">Valor Total</span>
+        <span id="detail-modal-price" class="font-serif text-lg sm:text-xl font-bold text-[#1A1918]">
+          R$ 0,00
+        </span>
+      </div>
+
+      <button 
+        id="detail-modal-add-btn"
+        type="button" 
+        class="inline-flex items-center gap-1.5 px-4 sm:px-5 py-2.5 bg-[#1A1918] text-[#FAF9F5] text-[10px] font-medium tracking-[0.2em] uppercase rounded-xl hover:bg-[#2E2A27] transition-all cursor-pointer shadow-xs active:scale-95"
+      >
+        <span>Adicionar à Sacola</span>
+        <svg class="w-3.5 h-3.5 stroke-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+        </svg>
+      </button>
+    </div>
+
   </div>
 </div>
-
-<style>
-  .font-serif {
-    font-family: 'Cormorant Garamond', Georgia, serif;
-  }
-</style>
 
 <script>
   function initDetailModal() {
     const modal = document.getElementById('product-detail-modal');
+    const modalContent = document.getElementById('detail-modal-card');
     const backdrop = document.getElementById('detail-modal-backdrop');
     const closeBtn = document.getElementById('detail-modal-close');
-    const okBtn = document.getElementById('detail-modal-ok-btn');
+    const addBtn = document.getElementById('detail-modal-add-btn');
 
     const titleEl = document.getElementById('detail-modal-title');
     const descEl = document.getElementById('detail-modal-desc');
     const imgEl = document.getElementById('detail-modal-img') as HTMLImageElement | null;
     const badgeEl = document.getElementById('detail-modal-badge');
     const catEl = document.getElementById('detail-modal-category');
+    const priceEl = document.getElementById('detail-modal-price');
 
-    function openModal(data: { name: string; desc: string; img: string; badge: string; category: string }) {
-      if (!modal) return;
-      if (titleEl) titleEl.textContent = data.name;
-      if (descEl) descEl.textContent = data.desc;
-      if (imgEl && data.img) {
-        imgEl.src = data.img;
-        imgEl.alt = data.name;
+    const varSection = document.getElementById('detail-modal-variations-section');
+    const varList = document.getElementById('detail-modal-variations-list');
+
+    let currentProduct: any = null;
+    let selectedVariationIndex = 0;
+    let currentCardEl: HTMLElement | null = null;
+
+    function updateSelectedVariation(idx: number) {
+      if (!currentProduct) return;
+      selectedVariationIndex = idx;
+
+      const hasVars = currentProduct.variations && currentProduct.variations.length > 0;
+      const variation = hasVars ? currentProduct.variations[idx] : null;
+
+      const price = variation?.price ?? currentProduct.price;
+      const image = variation?.image || currentProduct.image;
+
+      if (priceEl) {
+        priceEl.textContent = `R$ ${price.toFixed(2).replace('.', ',')}`;
       }
-      if (catEl) catEl.textContent = data.category;
+
+      if (imgEl && image) {
+        imgEl.src = image;
+      }
+
+      if (varList) {
+        const buttons = varList.querySelectorAll('button');
+        buttons.forEach((btn, bIdx) => {
+          if (bIdx === idx) {
+            btn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium border bg-[#1A1918] text-[#FAF8F5] border-[#1A1918] shadow-xs transition-all';
+          } else {
+            btn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium border bg-white text-[#524D48] border-[#DFDBD3] hover:border-[#8C827A] transition-all';
+          }
+        });
+      }
+    }
+
+    function openModalWithProduct(product: any, cardEl: HTMLElement | null) {
+      if (!modal || !product) return;
+      currentProduct = product;
+      currentCardEl = cardEl;
+      selectedVariationIndex = 0;
+
+      if (titleEl) titleEl.textContent = product.name;
+      if (descEl) descEl.textContent = product.description || 'Produto artesanal preparado com ingredientes selecionados.';
+      if (catEl) catEl.textContent = product.category || '';
+      
       if (badgeEl) {
-        if (data.badge) {
-          badgeEl.textContent = data.badge;
+        if (product.badge) {
+          badgeEl.textContent = product.badge;
           badgeEl.classList.remove('hidden');
         } else {
           badgeEl.classList.add('hidden');
         }
       }
 
+      const hasVars = product.variations && product.variations.length > 0;
+
+      if (hasVars && varSection && varList) {
+        varSection.classList.remove('hidden');
+        varList.innerHTML = '';
+
+        product.variations.forEach((v: any, vIdx: number) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          const vPrice = v.price ?? product.price;
+          btn.innerHTML = `${v.name} <span class="opacity-75 font-mono text-[10px] ml-1">R$ ${vPrice.toFixed(2).replace('.', ',')}</span>`;
+          btn.addEventListener('click', () => updateSelectedVariation(vIdx));
+          varList.appendChild(btn);
+        });
+      } else if (varSection) {
+        varSection.classList.add('hidden');
+      }
+
+      updateSelectedVariation(0);
+
       modal.classList.remove('invisible', 'opacity-0', 'pointer-events-none');
-      const innerCard = modal.querySelector('div:nth-child(2)');
-      innerCard?.classList.remove('scale-95');
-      innerCard?.classList.add('scale-100');
+      modalContent?.classList.remove('scale-95');
+      modalContent?.classList.add('scale-100');
       document.body.style.overflow = 'hidden';
     }
 
     function closeModal() {
       if (!modal) return;
-      const innerCard = modal.querySelector('div:nth-child(2)');
-      innerCard?.classList.add('scale-95');
-      innerCard?.classList.remove('scale-100');
+      modalContent?.classList.add('scale-95');
+      modalContent?.classList.remove('scale-100');
       modal.classList.add('opacity-0', 'pointer-events-none');
       setTimeout(() => {
         modal.classList.add('invisible');
         document.body.style.overflow = '';
-      }, 250);
+      }, 200);
     }
 
-    // Escuta cliques nos botões "...ver mais"
+    // Abertura do modal
     document.addEventListener('click', (e) => {
-      const btn = (e.target as HTMLElement).closest('[data-open-desc-btn]') as HTMLElement | null;
-      if (!btn) return;
+      const trigger = (e.target as HTMLElement).closest('[data-open-modal-btn], [data-open-desc-btn], [data-open-modal-trigger]');
+      if (!trigger) return;
 
-      openModal({
-        name: btn.dataset.prodName || '',
-        desc: btn.dataset.prodDesc || '',
-        img: btn.dataset.prodImg || '',
-        badge: btn.dataset.prodBadge || '',
-        category: btn.dataset.prodCategory || ''
-      });
+      const card = trigger.closest('.catalog-item') as HTMLElement | null;
+      if (!card) return;
+
+      let productData = null;
+      if (card.dataset.productPayload) {
+        try {
+          productData = JSON.parse(decodeURIComponent(card.dataset.productPayload));
+        } catch (err) {
+          try {
+            productData = JSON.parse(card.dataset.productPayload);
+          } catch (e2) {}
+        }
+      }
+
+      if (productData) {
+        openModalWithProduct(productData, card);
+      }
+    });
+
+    // CLIQUE NO BOTÃO ADICIONAR DO MODAL
+    addBtn?.addEventListener('click', () => {
+      if (!currentProduct) return;
+
+      if (!currentCardEl) {
+        currentCardEl = document.querySelector(`.catalog-item[data-product-name="${currentProduct.name}"]`);
+      }
+
+      const hasVars = currentProduct.variations && currentProduct.variations.length > 0;
+      const selectedVar = hasVars ? currentProduct.variations[selectedVariationIndex] : null;
+
+      const varName = selectedVar ? selectedVar.name : 'Padrão';
+      const varPrice = selectedVar?.price ?? currentProduct.price;
+      const varImg = selectedVar?.image || currentProduct.image;
+
+      if (currentCardEl) {
+        // 1. Sincroniza o select oculto (tanto selectedIndex quanto atributo HTML selected)
+        const selectEl = currentCardEl.querySelector('select[data-var-select]') as HTMLSelectElement | null;
+        if (selectEl) {
+          Array.from(selectEl.options).forEach((opt, idx) => {
+            if (idx === selectedVariationIndex) {
+              opt.setAttribute('selected', 'selected');
+              opt.selected = true;
+            } else {
+              opt.removeAttribute('selected');
+              opt.selected = false;
+            }
+          });
+          selectEl.selectedIndex = selectedVariationIndex;
+          selectEl.value = String(selectedVariationIndex);
+          selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+
+        // 2. Dispara o clique no botão espelho [data-var-btn] correspondente (caso o script ouça o botão)
+        const targetVarBtn = currentCardEl.querySelector(`[data-var-btn][data-var-idx="${selectedVariationIndex}"]`) as HTMLButtonElement | null;
+        if (targetVarBtn) {
+          const allBtns = currentCardEl.querySelectorAll('[data-var-btn]');
+          allBtns.forEach((b) => {
+            b.classList.remove('active', 'selected');
+            b.setAttribute('data-active', 'false');
+          });
+          targetVarBtn.classList.add('active', 'selected');
+          targetVarBtn.setAttribute('data-active', 'true');
+          targetVarBtn.click();
+        }
+
+        // 3. Atualiza os datasets no card e no botão
+        currentCardEl.dataset.selectedSize = varName;
+        currentCardEl.dataset.unitPrice = String(varPrice);
+        currentCardEl.dataset.selectedImage = varImg;
+
+        const realAddBtn = currentCardEl.querySelector('[data-btn-add-cart]') as HTMLButtonElement | null;
+        if (realAddBtn) {
+          realAddBtn.dataset.selectedSize = varName;
+          realAddBtn.dataset.unitPrice = String(varPrice);
+          realAddBtn.dataset.selectedImage = varImg;
+
+          // 4. Aciona a adição no carrinho
+          realAddBtn.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+        }
+      }
+
+      // Feedback visual e fecha modal
+      const originalHtml = addBtn.innerHTML;
+      addBtn.innerHTML = `<span>Adicionado ✓</span>`;
+      setTimeout(() => {
+        addBtn.innerHTML = originalHtml;
+        closeModal();
+      }, 350);
     });
 
     closeBtn?.addEventListener('click', closeModal);
-    okBtn?.addEventListener('click', closeModal);
     backdrop?.addEventListener('click', closeModal);
 
     window.addEventListener('keydown', (e) => {
