@@ -17,8 +17,8 @@ export interface Product {
   image: string;
   badge?: string;
   description?: string;
-  variations?: ProductVariation[]; // 👈 Nova lista de variações ricas
-  sizes?: string[]; // Mantido para compatibilidade simples
+  variations?: ProductVariation[];
+  sizes?: string[];
 }
 
 export interface CartItem {

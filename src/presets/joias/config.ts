@@ -46,7 +46,7 @@ export const joiasConfig = {
     facebook: "https://facebook.com/aureajoias",
   },
   businessHours: {
-    enabled: true,
+    enabled: false,
     closedMessage:
       "Ateliê fechado no momento. Atendimento de Segunda a Sábado das 10h às 19h.",
     schedule: {

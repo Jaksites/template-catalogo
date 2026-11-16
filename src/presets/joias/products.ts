@@ -4,6 +4,8 @@ export const joiasProducts = [
     name: "Colar Ponto de Luz Zircônia",
     category: "Colares",
     price: 139.9,
+    description:
+      "Colar delicado com pingente de zircônia, perfeito para ocasiões especiais ou para o dia a dia.",
     sizes: ["Banho Ouro 18k", "Prata 925"],
     image:
       "https://images.unsplash.com/photo-1786052337650-9e1c0dd01f5e?q=80&w=687&auto=format&fit=crop&q=80&w=600",
@@ -13,6 +15,8 @@ export const joiasProducts = [
     id: 202,
     name: "Anel Solitário Royal",
     category: "Anéis",
+    description:
+      "Anel solitário com pedra central, ideal para noivado ou presente especial.",
     price: 189.0,
     sizes: ["Aro 14", "Aro 16", "Aro 18", "Aro 20"],
     image:
@@ -22,6 +26,8 @@ export const joiasProducts = [
     id: 203,
     name: "Brinco Argola Cravejada",
     category: "Brincos",
+    description:
+      "Brinco argola com detalhes cravejados, elegante e versátil para qualquer ocasião.",
     price: 159.9,
     sizes: ["Banho Ouro 18k", "Prata 925"],
     image:
@@ -32,6 +38,8 @@ export const joiasProducts = [
     id: 204,
     name: "Brinco Ponto de Luz Pérola",
     category: "Brincos",
+    description:
+      "Brinco delicado com pérola, perfeito para complementar qualquer look.",
     price: 119.0,
     sizes: ["Pequeno", "Médio"],
     image:
@@ -41,6 +49,8 @@ export const joiasProducts = [
     id: 205,
     name: "Brinco Cascata Zircônias",
     category: "Brincos",
+    description:
+      "Brinco em formato de cascata com zircônias, ideal para eventos formais.",
     price: 219.9,
     sizes: ["Banho Ouro 18k"],
     image:
@@ -51,6 +61,8 @@ export const joiasProducts = [
     id: 206,
     name: "Pulseira Elo Lisos",
     category: "Pulseiras",
+    description:
+      "Pulseira com elos lisos, perfeita para uso diário ou para compor um mix de pulseiras.",
     price: 149.0,
     sizes: ["16cm", "18cm", "20cm"],
     image:
@@ -60,6 +72,8 @@ export const joiasProducts = [
     id: 207,
     name: "Pulseira Riviera Prata",
     category: "Pulseiras",
+    description:
+      "Pulseira estilo riviera com pedras cravejadas, ideal para ocasiões especiais.",
     price: 249.9,
     sizes: ["17cm", "19cm"],
     image:
@@ -69,6 +83,8 @@ export const joiasProducts = [
   {
     id: 208,
     name: "Pulseira Berloques Amor",
+    description:
+      "Pulseira com berloques temáticos de amor, perfeita para presentear alguém especial.",
     category: "Pulseiras",
     price: 199.0,
     sizes: ["17cm", "18cm", "19cm", "20cm"],
