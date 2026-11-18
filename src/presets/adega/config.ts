@@ -47,7 +47,7 @@ export const adegaConfig = {
     facebook: "https://facebook.com/reservaevinha",
   },
   businessHours: {
-    enabled: true,
+    enabled: false,
     closedMessage: "Fechado no momento. Abre as 14:00",
     schedule: {
       segunda: { open: "00:00", close: "00:00", closed: true },

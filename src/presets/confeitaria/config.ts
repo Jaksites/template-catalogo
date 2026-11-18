@@ -47,7 +47,7 @@ export const confeitariaConfig = {
     facebook: "https://facebook.com/dulcepetitconfeitaria",
   },
   businessHours: {
-    enabled: true,
+    enabled: false,
     closedMessage:
       "Cozinha fechada no momento. Atendimento de Terça a Domingo das 09h às 19h.",
     schedule: {

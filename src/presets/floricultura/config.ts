@@ -47,7 +47,7 @@ export const floriculturaConfig = {
     facebook: "https://facebook.com/terraevioleta",
   },
   businessHours: {
-    enabled: true,
+    enabled: false,
     closedMessage:
       "Ateliê fechado no momento. Pedidos via WhatsApp serão respondidos a partir das 08h30.",
     schedule: {

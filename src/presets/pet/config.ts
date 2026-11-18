@@ -47,7 +47,7 @@ export const petShopConfig = {
     facebook: "https://facebook.com/patasecompanhiapet",
   },
   businessHours: {
-    enabled: true,
+    enabled: false,
     closedMessage:
       "Pet shop fechado no momento. Atendimento de Segunda a Sábado das 08h às 20h.",
     schedule: {

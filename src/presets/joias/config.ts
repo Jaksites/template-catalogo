@@ -4,7 +4,7 @@ export const joiasConfig = {
   whatsappNumber: "559999999999",
   shippingNotice: "Frete expresso com seguro total em compras acima de R$ 499",
   theme: {
-    primary: "#b45309", // Âmbar / Ouro envelhecido sofisticado
+    primary: "#b45309",
     primaryHover: "#92400e",
     accent: "#fef3c7",
     accentText: "#78350f",

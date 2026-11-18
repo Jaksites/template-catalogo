@@ -47,7 +47,7 @@ export const modaConfig = {
     facebook: "https://facebook.com/atelierurbano",
   },
   businessHours: {
-    enabled: true,
+    enabled: false,
     closedMessage:
       "Loja física fechada. Compras pelo site são processadas normalmente 24 horas.",
     schedule: {
