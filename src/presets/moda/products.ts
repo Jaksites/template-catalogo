@@ -1,71 +1,82 @@
 export const modaProducts = [
   {
-    id: 1,
-    name: "Blazer Tailored Oversized",
-    category: "Casacos",
-    price: 289.9,
-    oldPrice: 349.9,
-    sizes: ["P", "M", "G"],
-    image:
-      "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&q=80&w=600",
-    badge: "Mais Vendido",
-  },
-  {
-    id: 2,
-    name: "Vestido Midi Canelado Elegance",
-    category: "Vestidos",
-    price: 189.0,
-    sizes: ["P", "M", "G"],
-    image:
-      "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&q=80&w=600",
-    badge: "Novo",
-  },
-  {
-    id: 3,
-    name: "Calça Wide Leg Alfaiataria",
-    category: "Calças",
-    price: 219.9,
-    sizes: ["36", "38", "40", "42"],
-    image:
-      "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&q=80&w=600",
-  },
-  {
-    id: 4,
-    name: "Camisa Linho Pure Pureness",
-    category: "Blusas",
-    price: 159.9,
-    oldPrice: 199.9,
-    sizes: ["P", "M", "G", "GG"],
-    image:
-      "https://images.unsplash.com/photo-1598554747436-c9293d6a588f?auto=format&fit=crop&q=80&w=600",
-  },
-  {
-    id: 5,
-    name: "Tricô Modal Gola Alta Cozy",
-    category: "Blusas",
-    price: 149.0,
-    oldPrice: 189.0,
-    sizes: ["P", "M", "G"],
-    image:
-      "https://images.unsplash.com/photo-1576871337632-b9aef4c17ab9?auto=format&fit=crop&q=80&w=600",
-    badge: "Inverno",
-  },
-  {
     id: 6,
     name: "Saia Midi Acetinada Evasê",
     category: "Saias",
+    description:
+      "Saia midi com acabamento acetinado e corte evasê fluido, trazendo movimento e feminilidade ao look.",
     price: 179.9,
     sizes: ["P", "M", "G"],
+    colors: ["Champagne", "Preto", "Vinho"],
     image:
       "https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?auto=format&fit=crop&q=80&w=600",
     badge: "Tendência",
   },
   {
+    id: 2,
+    name: "Vestido Midi Canelado Elegance",
+    category: "Vestidos",
+    description:
+      "Vestido midi em malha canelada com toque macio que valoriza a silhueta com conforto e sofisticação.",
+    price: 189.0,
+    sizes: ["P", "M", "G"],
+    colors: ["Preto", "Terracota", "Verde Militar"],
+    image:
+      "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&q=80&w=600",
+    badge: "Novo",
+  },
+  {
+    id: 4,
+    name: "Camisa Linho Pure Pureness",
+    category: "Blusas",
+    description:
+      "Camisa leve confeccionada em linho puro, oferecendo frescor, respirabilidade e um visual natural elegante.",
+    price: 159.9,
+    oldPrice: 199.9,
+    sizes: ["P", "M", "G", "GG"],
+    colors: ["Branco", "Areia", "Azul Claro"],
+    image:
+      "https://images.unsplash.com/photo-1598554747436-c9293d6a588f?auto=format&fit=crop&q=80&w=600",
+  },
+  {
+    id: 1,
+    name: "Blazer Tailored Oversized",
+    category: "Casacos",
+    description:
+      "Blazer de alfaiataria com modelagem oversized e caimento impecável, ideal para compor looks elegantes ou despojados.",
+    price: 289.9,
+    oldPrice: 349.9,
+    sizes: ["P", "M", "G"],
+    colors: ["Preto", "Bege", "Off-White"],
+    image:
+      "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&q=80&w=600",
+    badge: "Mais Vendido",
+  },
+
+  {
+    id: 5,
+    name: "Tricô Modal Gola Alta Cozy",
+    category: "Blusas",
+    description:
+      "Blusa em tricô modal macio com gola alta, ideal para os dias frios mantendo o estilo e o conforto.",
+    price: 149.0,
+    oldPrice: 189.0,
+    sizes: ["P", "M", "G"],
+    colors: ["Caramelo", "Preto", "Creme"],
+    image:
+      "https://images.unsplash.com/photo-1576871337632-b9aef4c17ab9?auto=format&fit=crop&q=80&w=600",
+    badge: "Inverno",
+  },
+
+  {
     id: 7,
     name: "Macacão Pantalona com Faixa",
     category: "Macacões",
+    description:
+      "Macacão pantalona elegante com faixa para amarração na cintura, garantindo praticidade e um caimento alongado.",
     price: 259.9,
     sizes: ["36", "38", "40", "42"],
+    colors: ["Preto", "Azul Marinho", "Verde Esmeralda"],
     image:
       "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=600",
   },
@@ -73,11 +84,26 @@ export const modaProducts = [
     id: 8,
     name: "Trench Coat Clássico Impermeável",
     category: "Casacos",
+    description:
+      "Trench coat atemporal com tecido impermeável e acabamento premium, perfeito para dias chuvosos com muito estilo.",
     price: 389.0,
     oldPrice: 449.0,
     sizes: ["P", "M", "G", "GG"],
+    colors: ["Caqui", "Preto", "Caramelo"],
     image:
       "https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&q=80&w=600",
     badge: "Premium",
+  },
+  {
+    id: 3,
+    name: "Calça Wide Leg Alfaiataria",
+    category: "Calças",
+    description:
+      "Calça wide leg de cintura alta em tecido de alfaiataria, perfeita para o trabalho ou produções casuais chiques.",
+    price: 219.9,
+    sizes: ["36", "38", "40", "42"],
+    colors: ["Preto", "Off-White", "Cinza"],
+    image:
+      "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&q=80&w=600",
   },
 ];
