@@ -1,7 +1,7 @@
 export const joiasConfig = {
   name: "ÁUREA & CO.",
   tagline: "Alta Joalheria em Ouro 18k e Pedras Naturais",
-  whatsappNumber: "559999999999",
+  whatsappNumber: "5541984940848",
   shippingNotice: "Frete expresso com seguro total em compras acima de R$ 499",
   theme: {
     primary: "#b45309",

@@ -1,7 +1,7 @@
 export const pizzariaConfig = {
   name: "FORNO & BASÍLICO",
   tagline: "Pizzaria Artesanal no Forno a Lenha",
-  whatsappNumber: "5511222222222",
+  whatsappNumber: "5541984940848",
   shippingNotice: "Entregas expressas em até 45 minutos no seu bairro",
   theme: {
     primary: "#ea580c", // Laranja quente

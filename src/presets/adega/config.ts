@@ -1,7 +1,7 @@
 export const adegaConfig = {
   name: "RESERVA & VINHA",
   tagline: "Vinhos Selecionados, Espumantes e Queijos Artesanais",
-  whatsappNumber: "559999999999",
+  whatsappNumber: "5541984940848",
   shippingNotice:
     "Bebidas enviadas geladas com entrega expressa em até 60 minutos",
   theme: {

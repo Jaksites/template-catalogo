@@ -33,6 +33,7 @@ export const pizzariaProducts: Product[] = [
       { name: "Grande (8 fatias)", price: 89.9 },
     ],
   },
+
   {
     id: 103,
     name: "Pizza de Chocolate com Morango",

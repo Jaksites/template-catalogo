@@ -1,7 +1,7 @@
 export const petShopConfig = {
   name: "PATAS & COMPANHIA",
   tagline: "Nutrição Premium, Farmácia e Acessórios Pet",
-  whatsappNumber: "559999999999",
+  whatsappNumber: "5541984940848",
   shippingNotice:
     "Entrega expressa no seu bairro em até 2 horas para pedidos até 17h",
   theme: {
